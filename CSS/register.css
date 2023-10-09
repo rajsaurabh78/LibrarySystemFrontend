@@ -35,3 +35,19 @@ label.required::after {
     content: " *"; /* Add an asterisk after the label text */
     color: red;    /* Optionally, style the asterisk as needed */
 }
+#list{
+    display:grid;
+    grid-template-columns: repeat(5,1fr);
+    margin: auto;
+    width: 90%;
+}
+#list>div{
+    margin: auto;
+    margin-top: 20px;
+    border: 1px solid;
+    border-radius: 20px;
+    text-align: center;
+}
+button{
+    margin-bottom: 20px;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/register.css">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div action="" id="main">
+        <h1>Add Floor</h1>
+        
+        <input type="number" placeholder="Enter Library Id" id="lib">
+        <input type="text" placeholder="Enter Floor Name" id="name"required> 
+        <h1 > Shift Details</h1>
+        <input type="text" placeholder="Enter shift Name" id="shift">
+        <div id="low">
+            <label for="startTime">Start Time :-</label required>
+                <input type="time" placeholder="Enter start Time" id="startTime">
+        </div>
+        <div id="low">
+            <label for="endTime">End Time :-</label required>
+                <input type="time" placeholder="Enter end Time" id="endTime">
+        </div>
+        <div id="low">
+            <input type="submit" id="submit" value="submit" onclick="addFloor()">
+            <a href="./AdminMethod.html"><input type="submit" value="Back"></a>
+        </div>
+
+
+
+    </div>
+</body>
+<script src="./JS/get.js"></script>
+</html>

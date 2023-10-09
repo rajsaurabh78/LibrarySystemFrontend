@@ -51,6 +51,7 @@ let stuFun=()=>{
 }
 
 let admFun=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
     let name=document.getElementById("name").value
     let address=document.getElementById("address").value
     let email=document.getElementById("email").value
@@ -59,10 +60,11 @@ let admFun=()=>{
     let mobile=document.getElementById("mobile").value
 
    // console.log(dob)
-    fetch("http://localhost:8080/register/admin", {
+    fetch("http://localhost:8080/admin/admin", {
 
         method: "POST",
         headers: {
+            "Authorization": `Bearer ${token}`,
             "content-type": "application/json"
         },
         body: JSON.stringify({
@@ -76,10 +78,10 @@ let admFun=()=>{
         })
         
     }).then(response => {
-        if(response.status == 201 | response.status == 200){
+        if(response.status == 201){
             response.json().then(data => {
               //  console.log(data);
-                alert("Student sucessfully registered with email: "+data.email)
+                alert("Student sucessfully registered with email: "+data.id)
             });
         }else{
             response.json().then(data => alert(data.message));
@@ -108,9 +110,11 @@ let aLogin=()=>{
         if (response.status == 202) {
             response.json().then(data => {
               //  console.log(response.headers.get("Authorization"));
-                document.getElementById("response").textContent = "Token: " + response.headers.get("Authorization");
+               // document.getElementById("response").textContent = "Token: " + response.headers.get("Authorization");
                 // alert("Student sucessfully registered with email: "+data.email)
-              });
+                localStorage.setItem("jwtToken",JSON.stringify(response.headers.get("Authorization")));
+                window.location.href="AdminMethod.html"
+            });
         
                
         } else {
@@ -136,11 +140,11 @@ let sLogin=()=>{
         if (response.status == 202) {
             response.json().then(data => {
                 console.log(data);
-                document.getElementById("response").textContent = response.headers.get("Authorization");
+                //document.getElementById("response").textContent = ;
                 // alert("Student sucessfully registered with email: "+data.email)
-              });
-        
-               
+                localStorage.setItem("jwtToken",JSON.stringify(response.headers.get("Authorization")));
+                window.location.href="UserMethod.html"
+              });    
         } else {
             alert("Authentication failed" );
         }

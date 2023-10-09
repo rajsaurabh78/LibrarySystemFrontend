@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/register.css">
+    <title>Document</title>
+    <style>
+        #list{
+            display:grid;
+            grid-template-columns: repeat(5,1fr);
+            margin: auto;
+            width: 90%;
+        }
+        #list>div{
+            margin: auto;
+            margin-top: 20px;
+            border: 1px solid;
+            border-radius: 20px;
+            text-align: center;
+        }
+        button{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div action="" id="main">
+        <h1> AllStudentInSortingOrder Page</h1>
+        <input type="text" placeholder="Enter Field" id="fie">
+        <select id="dir">
+            
+            <option value="asc">asc</option>
+            <option value="dsc">dsc</option>
+        </select>
+        <!-- <input type="text" placeholder="Enter direction" id=""> -->
+        <div id="low">
+            <input type="submit" id="submit" value="submit" onclick="getAllStudentInSortingOrder()">
+            <a href="./AdminMethod.html"><input type="submit" value="Back"></a>
+            
+        </div>
+        <a href="index.html">home</a>
+    
+        
+    </div>
+<div id="list"></div>
+</body>
+<script src="./JS/get.js"></script>
+</html>
