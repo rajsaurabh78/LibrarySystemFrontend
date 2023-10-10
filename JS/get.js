@@ -847,14 +847,40 @@ let allAdmin=()=>{
 /////////////////////////???????????????????????????????????????????????????????????
 let addFloor=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let lid=JSON.parse(localStorage.getItem("labId"))
     let name=document.getElementById("name").value
-    let lib=document.getElementById("lib").value
-    let shift=document.getElementById("shift").value
-    let startTime=document.getElementById("startTime").value
-    let endTime=document.getElementById("endTime").value
-
+   // console.log(s);
    // console.log(dob)
-    fetch(`http://localhost:8080/admin/addfloor/${lib}`, {
+    fetch(`http://localhost:8080/admin/addfloor/${lid}`, {
+
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "name": name
+        })
+        
+    }).then(response => {
+        if(response.status == 201){
+            response.json().then(data => {
+              console.log(data);
+                alert("Sucessfully registered in library with Id :-"+lid)
+            });
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+
+}
+let addLibrary=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let name=document.getElementById("name").value
+    let floor=document.getElementById("floor").value
+    let address=document.getElementById("address").value
+   // console.log(dob)
+    fetch("http://localhost:8080/admin/addlibrary", {
 
         method: "POST",
         headers: {
@@ -863,23 +889,285 @@ let addFloor=()=>{
         },
         body: JSON.stringify({
             "name": name,
-            "shiftList":[{
-            "shift":shift,
-            "startTime": startTime,
-            "endTime": endTime}
-        ]
-            
+            "address":address,
+            "floorList":[
+                {
+                    "name":floor
+                }
+            ]
         })
         
     }).then(response => {
         if(response.status == 201){
             response.json().then(data => {
               console.log(data);
-                alert("Sucessfully registered in library with Id :-"+lib)
+                alert("Sucessfully registered library with Id :-"+labId)
             });
         }else{
             response.json().then(data => alert(data.message));
         }
     })
+}
+let AllLibrary=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let url=`http://localhost:8080/admin/librarys`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+                console.log(data);
+                data.forEach(({name,address,labId,floorList},i)=> {
+                
+                    //  document.querySelector("#list").innerHTML=[]
+                    let div=document.createElement("div")
+                    let n=document.createElement("h3")
+                    n.innerText="Name : "+name
+                    let uid=document.createElement("h4")
+                    uid.innerText="Lab Id : "+labId
+                    let a=document.createElement("h4")
+                    a.innerText="Address : "+address
+                    let remove=document.createElement("button")
+                    remove.innerText="Remove"
+                    remove.style.color="red"
+                    remove.addEventListener("click",function(){
+                    removeLibrary(labId,token)
+                    })
+                    let update=document.createElement("button")
+                    update.innerText="Update"
+                    update.style.color="green"
+                    update.addEventListener("click",function(){
+                    localStorage.setItem("labId",JSON.stringify(labId))
+                    window.location.href="updateLibrary.html"
+                    })
+                    let addFl=document.createElement("button")
+                    addFl.innerText="AddFloor"
+                    addFl.style.color="green"
+                    addFl.addEventListener("click",function(){
+                    localStorage.setItem("labId",JSON.stringify(labId))
+                    window.location.href="addFloor.html"
+                    
+                    })
+                    let showFl=document.createElement("button")
+                    showFl.innerText="ShowFloor"
+                    showFl.style.color="green"
+                    showFl.addEventListener("click",function(){
+                    localStorage.setItem("labId",JSON.stringify(labId))
+                    window.location.href="showFloor.html"
+                    
+                    })
+            div.append(n,uid,a,update,remove,addFl,showFl)
+            document.querySelector("#list").append(div)
+})});
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+let showFloor=()=>{
+    let lid=JSON.parse(localStorage.getItem("labId"))
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let url=`http://localhost:8080/admin/floors/${lid}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+                console.log(data);
+                data.forEach(({name,floorNo,shiftList},i)=> {
+                
+                    //  document.querySelector("#list").innerHTML=[]
+                    let div=document.createElement("div")
+                    let n=document.createElement("h3")
+                    n.innerText="Name : "+name
+                    let uid=document.createElement("h4")
+                    uid.innerText="Floor Id : "+floorNo
+                    let remove=document.createElement("button")
+                    remove.innerText="Remove"
+                    remove.style.color="red"
+                    remove.addEventListener("click",function(){
+                    removeFloor(floorNo,token)
+                    })
+                    let update=document.createElement("button")
+                    update.innerText="EditName"
+                    update.style.color="green"
+                    update.addEventListener("click",function(){
+                        editName(floorNo,token)
+                    })
+                    let addsft=document.createElement("button")
+                    addsft.innerText="AddShift"
+                    addsft.style.color="green"
+                    addsft.addEventListener("click",function(){
+                    localStorage.setItem("floorNo",JSON.stringify(floorNo))
+                    window.location.href="addShift.html"
+                    
+                    })
+                    let showF=document.createElement("button")
+                    showF.innerText="ShowShift"
+                    showF.style.color="green"
+                    showF.addEventListener("click",function(){
+                    localStorage.setItem("floorNo",JSON.stringify(floorNo))
+                    window.location.href="showShifts.html"
+                    
+                    })
+            div.append(n,uid,update,remove,addsft,showF)
+            document.querySelector("#list").append(div)
+})});
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+let updateLibrary=()=>{
+    let lid=JSON.parse(localStorage.getItem("labId"))
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let name=document.getElementById("name").value
+    let ad=document.getElementById("address").value
+ 
 
+   // console.log(dob)
+    fetch("http://localhost:8080/admin/library/"+lid, {
+
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "name": name,
+            "address": ad
+            
+        })
+        
+    }).then(response => {
+        if(response.status == 200){
+           alert("Updated .")
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+let removeLibrary=(id,token)=>{
+    let choice= confirm("Are You Sure ?");
+
+    if(choice){
+    fetch("http://localhost:8080/admin/delLibrary/"+id, {
+
+    method: "DELETE",
+    headers: {
+        "Authorization": `Bearer ${token}`
+      //  "Content-Type": "application/json",
+    }
+   
+}).then(response => {
+    if(response.status == 200){
+
+        alert("Student sucessfully deleted: ");
+       
+            location.reload();
+            //getAdminById();
+
+    }else{
+        response.json().then(data => alert(data.message));
+    }
+})
+    }
+}
+let removeFloor=(id,token)=>{
+    let choice= confirm("Are You Sure ?");
+
+    if(choice){
+    fetch("http://localhost:8080/admin/delfloor/"+id, {
+
+    method: "DELETE",
+    headers: {
+        "Authorization": `Bearer ${token}`
+      //  "Content-Type": "application/json",
+    }
+   
+}).then(response => {
+    if(response.status == 200){
+
+        alert("Student sucessfully deleted: ");
+       
+            location.reload();
+            //getAdminById();
+
+    }else{
+        response.json().then(data => alert(data.message));
+    }
+})
+    }
+}
+let editName=(fl,token)=>{
+    let userInput = prompt("Please enter Change name -:");
+    if (userInput !== "") {
+        fetch(`http://localhost:8080/admin/upfloor/${fl}/${userInput}`, {
+
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        }
+        
+    }).then(response => {
+        if(response.status == 200){
+           alert("Updated .")
+           location.reload()
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+    } else {
+        alert("Name is required.");
+    }
+}
+//'''''''''''''''''''''''''''''''''''''''''''''''''''
+let addShift=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let fn=JSON.parse(localStorage.getItem("floorNo"))
+    let name=document.getElementById("name").value
+    let endTime=document.getElementById("endTime").value
+    let startTime=document.getElementById("startTime").value
+   console.log(fn)
+    fetch(`http://localhost:8080/admin/addshift/${fn}`, {
+
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "name": name,
+            "startTime":startTime,
+            "endTime":endTime,
+            "seatList":[
+                {},{},
+                {},{},
+                {},{},
+                {},{},
+                {},{}
+            ]
+        })
+        
+    }).then(response => {
+        if(response.status == 201){
+            response.json().then(data => {
+              console.log(data);
+                alert("Sucessfully registered shift with floor Id :-"+fn)
+            });
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
 }
