@@ -48,7 +48,8 @@ let getAllStudentInSortingOrder=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
                 })
                 let Setseat=document.createElement("button")
                 Setseat.innerText="SetSeat"
@@ -157,14 +158,51 @@ let setSeat=(userId,token)=>{
     }
 
 }
-let updatebtnfunc=(name,address,marks)=>{
-   
-    const url = `updateStudent.html?name=${name}&address=${address}&marks=${marks}`;
+let updateUser=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let id=JSON.parse(localStorage.getItem("UserId"))
+    let name=document.getElementById("name").value
+    let address=document.getElementById("address").value
+    let email=document.getElementById("email").value
+    let dob=document.getElementById("dob").value
+    let pass=document.getElementById("password").value
+    let mobile=document.getElementById("mobile").value
+    let pay=document.getElementById("payment").value
+    let shift=document.getElementById("shift").value
 
-    location.href= url;
+   // console.log(dob)
+    fetch("http://localhost:8080/students/student", {
 
-   
-  }
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "userId":id,
+            "name": name,
+            "email":email,
+            "password":pass,
+            "address": address,
+            "mobile": mobile,
+            "DOB":dob,
+            "payment":pay,
+            "wantedShift":shift
+        })
+        
+    }).then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+              //  console.log(data);
+                alert("Admin sucessfully updated with id: "+data.userId)
+                window.location.href="AdminMethod.html"
+            });
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+
+}
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 let getAllSortedStudentWithPagination=()=>{
@@ -218,7 +256,8 @@ let getAllSortedStudentWithPagination=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
                 seat.innerText="SetSeat"
@@ -289,7 +328,8 @@ let getStudentById=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
                 seat.innerText="SetSeat"
@@ -359,7 +399,8 @@ let getStudentBySeat=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
                 seat.innerText="SetSeat"
@@ -425,13 +466,15 @@ let getStudentByFloor=()=>{
                   remove.innerText="Remove"
                   remove.style.color="red"
                   remove.addEventListener("click",function(){
-              removebtnfunc(userId,token)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
               })
               let update=document.createElement("button")
                   update.innerText="Update"
                   update.style.color="green"
                   update.addEventListener("click",function(){
-                  updatebtnfunc(elem,index)
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
               })
               let seat=document.createElement("button")
               seat.innerText="SetSeat"
@@ -455,11 +498,9 @@ let getStudentByFloor=()=>{
     })
 }
 //////////////////////////////////////////////////////////////////////////
-let =()=>{
+let allAvalibleSeats=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let user=document.getElementById("id").value
-   // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/studentshift/${user}`
+    let url=`http://localhost:8080/admin/seats`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -470,54 +511,41 @@ let =()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-          //  console.log(data);
-            data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
-                
-              //  document.querySelector("#list").innerHTML=[]
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+name
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+userId
-                let e=document.createElement("h4")
-                e.innerText="Email : "+email
-                let m=document.createElement("h4")
-                m.innerText="Mobile : "+mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+address
-                let pay=document.createElement("h4")
-                pay.innerText="Payment : "+payment
-                let w=document.createElement("h4")
-                w.innerText="WantedShift : "+wantedShift
-                let ps=document.createElement("h4")
-                ps.innerText="ProvidedShift : "+providedShift
+         //  console.log(data);
+         document.getElementById("sum").innerText+=data.length 
+           data.forEach(({floor,seatNo},i)=> {
+            
+            //  document.querySelector("#list").innerHTML=[]
+            let div=document.createElement("div")
+            let uid=document.createElement("h4")
+            uid.innerText="Floor Id : "+floor
+            let st=document.createElement("h4")
+            st.innerText="Seat No. : "+seatNo
                 let remove=document.createElement("button")
                     remove.innerText="Remove"
                     remove.style.color="red"
                     remove.addEventListener("click",function(){
-                removebtnfunc(userId,token)
+                    deleteSeat(seatNo,token)
                 })
-                let update=document.createElement("button")
-                    update.innerText="Update"
-                    update.style.color="green"
-                    update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
-                })
-                let seat=document.createElement("button")
-                seat.innerText="SetSeat"
-                seat.style.color="green"
-                seat.addEventListener("click",function(){
-                    setSeat(userId,token)
-                })
-                let rseat=document.createElement("button")
-                rseat.innerText="RemoveSeat"
-                rseat.style.color="red"
-                rseat.addEventListener("click",function(){
-                    removeSeat(userId,token)
-                })
-            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+                // let update=document.createElement("button")
+                //     update.innerText="Update"
+                //     update.style.color="green"
+                //     update.addEventListener("click",function(){
+                //     updatebtnfunc(elem,index)
+                // })
+                // let seat=document.createElement("button")
+                // seat.innerText="SetSeat"
+                // seat.style.color="green"
+                // seat.addEventListener("click",function(){
+                //     setSeat(userId,token)
+                // })
+                // let rseat=document.createElement("button")
+                // rseat.innerText="RemoveSeat"
+                // rseat.style.color="red"
+                // rseat.addEventListener("click",function(){
+                //     removeSeat(userId,token)
+                // })
+            div.append(st,uid,remove)
             document.querySelector("#list").append(div)
             
     })});
@@ -576,7 +604,8 @@ let getStudentAreaWise=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                        localStorage.setItem("UserId",JSON.stringify(userId))
+                        window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
                 seat.innerText="SetSeat"
@@ -638,7 +667,8 @@ let getAllStudentWithNoSeatNo=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    updatebtnfunc(elem,index)
+                        localStorage.setItem("UserId",JSON.stringify(userId))
+                        window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
                 seat.innerText="SetSeat"
@@ -1148,7 +1178,7 @@ let addShift=()=>{
             "content-type": "application/json"
         },
         body: JSON.stringify({
-            "name": name,
+            "shiftName": name,
             "startTime":startTime,
             "endTime":endTime,
             "seatList":[
@@ -1170,4 +1200,214 @@ let addShift=()=>{
             response.json().then(data => alert(data.message));
         }
     })
+}
+//...................................>>>>>>>>>>>>>>>>>>>
+let showShifts=()=>{
+    let floorNo=JSON.parse(localStorage.getItem("floorNo"))
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let url=`http://localhost:8080/admin/shifts/${floorNo}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+                console.log(data);
+                data.forEach(({shiftName,startTime,endTime,shiftId,seatList},i)=> {
+                
+                    //  document.querySelector("#list").innerHTML=[]
+                    let div=document.createElement("div")
+                    let n=document.createElement("h3")
+                    n.innerText="Name : "+shiftName
+                    let uid=document.createElement("h4")
+                    uid.innerText="Floor Id : "+shiftId
+                    let st=document.createElement("h4")
+                    st.innerText="Start : "+startTime
+                    let et=document.createElement("h4")
+                    et.innerText="Close : "+endTime
+                    let remove=document.createElement("button")
+                    remove.innerText="Remove"
+                    remove.style.color="red"
+                    remove.addEventListener("click",function(){
+                    removeShift(shiftId,token)
+                    })
+                    let update=document.createElement("button")
+                    update.innerText="Update"
+                    update.style.color="green"
+                    update.addEventListener("click",function(){
+                        updateSeat(shiftId,token)
+                    })
+                    let addSt=document.createElement("button")
+                    addSt.innerText="AddSeat"
+                    addSt.style.color="green"
+                    addSt.addEventListener("click",function(){
+                        addSeat(shiftId,token)
+                    
+                    })
+                    let showSt=document.createElement("button")
+                    showSt.innerText="ShowSeat"
+                    showSt.style.color="green"
+                    showSt.addEventListener("click",function(){
+                    localStorage.setItem("ShiftNo",JSON.stringify(shiftId))
+                    window.location.href="showSeats.html"
+                    
+                    })
+            div.append(n,uid,st,et,update,remove,addSt,showSt)
+            document.querySelector("#list").append(div)
+})});
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+
+let removeShift=(id,token)=>{
+    let choice= confirm("Are You Sure ?");
+
+    if(choice){
+    fetch("http://localhost:8080/admin/delshift/"+id, {
+
+    method: "DELETE",
+    headers: {
+        "Authorization": `Bearer ${token}`
+      //  "Content-Type": "application/json",
+    }
+   
+}).then(response => {
+    if(response.status == 200){
+
+        alert("Shift sucessfully deleted: ");
+       
+            location.reload();
+            //getAdminById();
+
+    }else{
+        response.json().then(data => alert(data.message));
+    }
+})
+    }
+}
+let addSeat=(shiftId,token)=>{
+    fetch(`http://localhost:8080/admin/seats/${shiftId}`, {
+
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+        })
+        
+    }).then(response => {
+        if(response.status == 201){
+            response.json().then(data => {
+              console.log(data);
+                alert("Sucessfully registered seat with shift Id :-"+shiftId)
+            });
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+
+let updateSeat=(shiftId,token)=>{
+    let name = prompt("Please enter Change name -:");
+    let st = prompt("Please enter Updated start time -:");
+    let et = prompt("Please enter Updated close time name -:");
+
+    if (name !== ""||st !== ""||et !== "") {
+        fetch(`http://localhost:8080/admin/upshift`, {
+
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "shiftId":shiftId,
+            "shiftName":name,
+            "startTime":st,
+            "endTime":et
+        })
+        
+    }).then(response => {
+        if(response.status == 200){
+           alert("Updated .")
+           location.reload()
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+    } else {
+        alert("All fields are required.");
+    }
+}
+
+let showSeats=()=>{
+    let ShiftNo=JSON.parse(localStorage.getItem("ShiftNo"))
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let url=`http://localhost:8080/admin/seats/${ShiftNo}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+                console.log(data);
+                data.forEach(({floor,seatNo},i)=> {
+                
+                    //  document.querySelector("#list").innerHTML=[]
+                    let div=document.createElement("div")
+                    let uid=document.createElement("h4")
+                    uid.innerText="Floor Id : "+floor
+                    let st=document.createElement("h4")
+                    st.innerText="Seat No. : "+seatNo
+                    let remove=document.createElement("button")
+                    remove.innerText="Remove"
+                    remove.style.color="red"
+                    remove.addEventListener("click",function(){
+                    deleteSeat(seatNo,token)
+                    })
+            div.append(uid,st,remove)
+            document.querySelector("#list").append(div)
+})});
+        }else{
+            response.json().then(data => alert(data.message));
+        }
+    })
+}
+
+let deleteSeat=(seatNo,token)=>{
+    let choice= confirm("Are You Sure ?");
+
+    if(choice){
+    fetch("http://localhost:8080/admin/seats/"+seatNo, {
+
+    method: "DELETE",
+    headers: {
+        "Authorization": `Bearer ${token}`
+      //  "Content-Type": "application/json",
+    }
+   
+}).then(response => {
+    if(response.status == 200){
+
+        alert("Shift sucessfully deleted: ");
+       
+            location.reload();
+            //getAdminById();
+
+    }else{
+        response.json().then(data => alert(data.message));
+    }
+})
+    }
 }
