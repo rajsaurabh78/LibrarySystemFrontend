@@ -15,20 +15,29 @@
         <input type="tel" placeholder="Enter Mobile" id="mobile">
         <input type="password" placeholder="Enter Password" id="password">
         <input type="text" placeholder="Enter Address" id="address">
-        <input type="text" placeholder="Enter wantedShift" id="shift">
+        <div id="low">
+            <p>Wanted Shifts</p>
+            <label for="shift">First</label>
+            <input type="checkbox" id="First" value="First">
+            <label for="shift">Second</label>
+            <input type="checkbox" id="Second" value="Second">
+            <label for="shift">Third</label>
+            <input type="checkbox" id="Third" value="Third">
+            <!-- <input type="text" placeholder="Enter wantedShift" id="shift"> -->
+        </div>
         <div id="low">
             <label for="dob">DOB :--</label>
             <input type="date" placeholder="Enter DOB" id="dob">
         </div>
         <div id="low">
             <label for="payment">Payment</label>
-            <input type="checkbox" id="payment" value="false">
+            <input type="checkbox" id="payment" value="True">
         </div>
         <div id="low">
             <input type="submit" id="submit" value="submit" onclick="stuFun()">
-            <a href="./AdminMethod.html"><input type="submit" value="Back"></a>
+            <a href="./index.html"><input type="submit" value="Home"></a>
         </div>
-
+        <a href="./AdminMethod.html">AdminPage</a>
 
 
     </div>

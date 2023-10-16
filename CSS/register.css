@@ -51,3 +51,13 @@ label.required::after {
 button{
     margin-bottom: 20px;
 }
+#fl{
+    margin: auto;
+    /* margin-left:400px; */
+    /* display: flex; */
+    border: 1px solid;
+}
+#fl>div{
+    /* margin-left:100px; */
+    display: flex;
+}

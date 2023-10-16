@@ -13,11 +13,15 @@
         <input type="number" placeholder="Enter pageNumber" id="page">
         <input type="number" placeholder="Enter pageSize" id="size">
         <input type="text" placeholder="Enter field" id="field">
-        <select id="dirn">
-            
-            <option value="asc">asc</option>
-            <option value="dsc">dsc</option>
-        </select>
+        <h1></h1>
+        <div id="low">
+            <label for="">Direction</label>
+            <select id="dirn">
+                
+                <option value="asc">asc</option>
+                <option value="dsc">dsc</option>
+            </select>
+        </div>    
         <div id="low">
             <input type="submit" id="submit" value="submit" onclick="getAllSortedStudentWithPagination()">
             <a href="./AdminMethod.html"><input type="submit" value="Back"></a>

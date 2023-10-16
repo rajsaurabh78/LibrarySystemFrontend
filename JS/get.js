@@ -14,10 +14,11 @@ let getAllStudentInSortingOrder=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-            console.log(data);
+          //  console.log(data);
+            document.querySelector("#list").innerHTML=[]
             data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,seats},i)=> {
                 
-              //  document.querySelector("#list").innerHTML=[]
+                
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
                 n.innerText="Name : "+name
@@ -63,12 +64,21 @@ let getAllStudentInSortingOrder=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(userId,token)
                 })
-            div.append(n,id,e,m,D,a,p,w,ps,update,remove,Setseat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,e,m,D,a,p,w,ps,update,remove,Setseat,rseat,seatM)
             document.querySelector("#list").append(div)
             
-    })});
+    })});}else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 
@@ -90,13 +100,17 @@ let removebtnfunc=(userId,token)=>{
 }).then(response => {
     if(response.status == 200){
 
-        alert("Student sucessfully deleted: ");
-       
-            //location.reload();
-            getAllStudentInSortingOrder();
-
-    }else{
+        response.text().then(data => {
+            alert(data)
+            window.location.reload();
+        })
+            
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
+        }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -118,14 +132,18 @@ let removeSeat=(userId,token)=>{
    
 }).then(response => {
     if(response.status == 200){
-        console.log(response.json().data);
-        alert("Student sucessfully removed: ");
-       
-            //location.reload();
-            getAllStudentInSortingOrder();
+      //  console.log(response.json().data);
+        response.text().then(data => {
+            alert(data)
+            window.location.reload();
+        })
 
-    }else{
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
+        }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -147,18 +165,39 @@ let setSeat=(userId,token)=>{
    
 }).then(response => {
     if(response.status == 200){
-       // console.log(response.json().data);
-        alert("Student sucessfully removed: ");
-        getAllStudentInSortingOrder();
+        response.text().then(data => {
+            alert(data);
+            window.location.reload()
+        })
 
+    }else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
 
 }
 let updateUser=()=>{
+    let payment=false;
+    let pay = document.getElementById("payment");
+    if (pay.checked) {
+    payment=pay.value
+    }
+    let shift="";
+    let First=document.getElementById("First")
+    let Second=document.getElementById("Second")
+    let Third=document.getElementById("Third")
+    if(First.checked){
+        shift+=First.value+" , "
+    }if(Second.checked){
+        shift+=Second.value+" , "
+    }if(Third.checked){
+        shift+=Third.value
+    }
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let id=JSON.parse(localStorage.getItem("UserId"))
     let name=document.getElementById("name").value
@@ -167,9 +206,6 @@ let updateUser=()=>{
     let dob=document.getElementById("dob").value
     let pass=document.getElementById("password").value
     let mobile=document.getElementById("mobile").value
-    let pay=document.getElementById("payment").value
-    let shift=document.getElementById("shift").value
-
    // console.log(dob)
     fetch("http://localhost:8080/students/student", {
 
@@ -186,7 +222,7 @@ let updateUser=()=>{
             "address": address,
             "mobile": mobile,
             "DOB":dob,
-            "payment":pay,
+            "payment":payment,
             "wantedShift":shift
         })
         
@@ -194,11 +230,15 @@ let updateUser=()=>{
         if(response.status == 200){
             response.json().then(data => {
               //  console.log(data);
-                alert("Admin sucessfully updated with id: "+data.userId)
+                alert(data)
                 window.location.href="AdminMethod.html"
             });
+        }else if(response.status == 401){
+                alert("Session expired .")
+                window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 
@@ -223,10 +263,9 @@ let getAllSortedStudentWithPagination=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-            console.log(data);
+           // console.log(data);
+            document.querySelector("#list").innerHTML=[]
             data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
-                
-              //  document.querySelector("#list").innerHTML=[]
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
                 n.innerText="Name : "+name
@@ -271,12 +310,21 @@ let getAllSortedStudentWithPagination=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(userId,token)
                 })
-            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
             document.querySelector("#list").append(div)
             
-    })});
+    })});}else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 
@@ -298,7 +346,8 @@ let getStudentById=()=>{
         if(response.status == 200){
             response.json().then(data => {
        //     console.log(data);
-            let el=data
+                document.querySelector("#list").innerHTML=[]
+                let el=data
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
                 n.innerText="Name : "+el.name
@@ -328,7 +377,7 @@ let getStudentById=()=>{
                     update.innerText="Update"
                     update.style.color="green"
                     update.addEventListener("click",function(){
-                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    localStorage.setItem("UserId",JSON.stringify(el.userId))
                     window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
@@ -343,11 +392,20 @@ let getStudentById=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(el.userId,token)
                 })
-            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
             document.querySelector("#list").append(div)
-});
+});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -369,6 +427,7 @@ let getStudentBySeat=()=>{
         if(response.status == 200){
             response.json().then(data => {
            // console.log(data);
+           document.querySelector("#list").innerHTML=[]
             let el=data
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
@@ -414,11 +473,20 @@ let getStudentBySeat=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(el.userId,token)
                 })
-            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
             document.querySelector("#list").append(div)
-});
+});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -440,10 +508,11 @@ let getStudentByFloor=()=>{
         if(response.status == 200){
             response.json().then(data => {
            // console.log(data);
+           document.querySelector("#list").innerHTML=[]
+           document.getElementById("sum").innerText="Total student : "+data.length
            data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
-                
-            //  document.querySelector("#list").innerHTML=[]
-              let div=document.createElement("div")
+              
+            let div=document.createElement("div")
               let n=document.createElement("h3")
               n.innerText="Name : "+name
               let id=document.createElement("h4")
@@ -488,12 +557,107 @@ let getStudentByFloor=()=>{
               rseat.addEventListener("click",function(){
                   removeSeat(userId,token)
               })
-          div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+              let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+          div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
           document.querySelector("#list").append(div)
           
   })});
+}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
+        }
+    })
+}
+//'''''''''''''''''''''''''''''''''''
+let getStudentByShift=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let user=document.getElementById("id").value
+   // const studentTableBody = document.getElementById('student-table-body');
+    let url=`http://localhost:8080/admin/studentshift/${user}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+           // console.log(data);
+           document.querySelector("#list").innerHTML=[]
+           document.getElementById("sum").innerText="Total student : "+data.length
+           data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
+              
+            let div=document.createElement("div")
+              let n=document.createElement("h3")
+              n.innerText="Name : "+name
+              let id=document.createElement("h4")
+              id.innerText="User Id : "+userId
+              let e=document.createElement("h4")
+              e.innerText="Email : "+email
+              let m=document.createElement("h4")
+              m.innerText="Mobile : "+mobile
+              let D=document.createElement("h4")
+              D.innerText="DOB : "+DOB
+              let a=document.createElement("h4")
+              a.innerText="Address : "+address
+              let pay=document.createElement("h4")
+              pay.innerText="Payment : "+payment
+              let w=document.createElement("h4")
+              w.innerText="WantedShift : "+wantedShift
+              let ps=document.createElement("h4")
+              ps.innerText="ProvidedShift : "+providedShift
+              let remove=document.createElement("button")
+                  remove.innerText="Remove"
+                  remove.style.color="red"
+                  remove.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let update=document.createElement("button")
+                  update.innerText="Update"
+                  update.style.color="green"
+                  update.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let seat=document.createElement("button")
+              seat.innerText="SetSeat"
+              seat.style.color="green"
+              seat.addEventListener("click",function(){
+                  setSeat(userId,token)
+              })
+              let rseat=document.createElement("button")
+              rseat.innerText="RemoveSeat"
+              rseat.style.color="red"
+              rseat.addEventListener("click",function(){
+                  removeSeat(userId,token)
+              })
+              let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+          div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
+          document.querySelector("#list").append(div)
+          
+  })});
+    }else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
+        }else{
+            response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -512,10 +676,9 @@ let allAvalibleSeats=()=>{
         if(response.status == 200){
             response.json().then(data => {
          //  console.log(data);
-         document.getElementById("sum").innerText+=data.length 
+         document.querySelector("#list").innerHTML=[]
+         document.getElementById("sum").innerText+=data.length
            data.forEach(({floor,seatNo},i)=> {
-            
-            //  document.querySelector("#list").innerHTML=[]
             let div=document.createElement("div")
             let uid=document.createElement("h4")
             uid.innerText="Floor Id : "+floor
@@ -549,8 +712,12 @@ let allAvalibleSeats=()=>{
             document.querySelector("#list").append(div)
             
     })});
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -559,7 +726,6 @@ let allAvalibleSeats=()=>{
 let getStudentAreaWise=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let user=document.getElementById("id").value
-   // const studentTableBody = document.getElementById('student-table-body');
     let url=`http://localhost:8080/admin/studentlist?address=${user}`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
@@ -572,9 +738,8 @@ let getStudentAreaWise=()=>{
         if(response.status == 200){
             response.json().then(data => {
           //  console.log(data);
+            document.querySelector("#list").innerHTML=[]
             data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
-                
-              //  document.querySelector("#list").innerHTML=[]
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
                 n.innerText="Name : "+name
@@ -619,12 +784,22 @@ let getStudentAreaWise=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(userId,token)
                 })
-            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
             document.querySelector("#list").append(div)
             
     })});
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -642,10 +817,9 @@ let getAllStudentWithNoSeatNo=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-            console.log(data);
+           // console.log(data);
+            document.querySelector("#list").innerHTML=[]
             data.forEach(({name,payment,wantedShift,providedShift,userId},i)=> {
-                
-              //  document.querySelector("#list").innerHTML=[]
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
                 n.innerText="Name : "+name
@@ -671,7 +845,7 @@ let getAllStudentWithNoSeatNo=()=>{
                         window.location.href="userUpdate.html"
                 })
                 let seat=document.createElement("button")
-                seat.innerText="SetSeat"
+                seat.innerText="SetSeatAuto"
                 seat.style.color="green"
                 seat.addEventListener("click",function(){
                     setSeat(userId,token)
@@ -682,15 +856,143 @@ let getAllStudentWithNoSeatNo=()=>{
                 rseat.addEventListener("click",function(){
                     removeSeat(userId,token)
                 })
-            div.append(n,id,pay,w,ps,update,remove,seat,rseat)
+                let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+            div.append(n,id,pay,w,ps,update,remove,seat,rseat,seatM)
             document.querySelector("#list").append(div)
             
-    })});
+    })});}else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
+
+let setSeatManual=(userId,token)=>{
+    
+    let choice= confirm("Are You Sure ?");
+    let shift=prompt("Enter shift name");
+    if(choice){
+        fetch(`http://localhost:8080/admin/studentseats/${userId}/${shift}`, {
+
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        //  "Content-Type": "application/json",
+        }
+    
+        }).then(response => {
+        if(response.status == 200){
+        response.text().then(data => {
+            alert(data);
+            window.location.reload()
+        })
+
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
+        }else{
+            response.json().then(data => alert(data.message));
+            window.location.reload()
+        }
+        })
+    }
+
+}
+
+//''''''''''''''''''''''''''''''''''
+let allStudentWithNoPay=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let url=`http://localhost:8080/admin/studentnopay`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+           // console.log(data);
+            document.querySelector("#list").innerHTML=[]
+            data.forEach(({name,payment,wantedShift,providedShift,userId},i)=> {
+                let div=document.createElement("div")
+                let n=document.createElement("h3")
+                n.innerText="Name : "+name
+                let id=document.createElement("h4")
+                id.innerText="User Id : "+userId
+                let pay=document.createElement("h4")
+                pay.innerText="Payment : "+payment
+                let w=document.createElement("h4")
+                w.innerText="WantedShift : "+wantedShift
+                let ps=document.createElement("h4")
+                ps.innerText="ProvidedShift : "+providedShift
+                let remove=document.createElement("button")
+                remove.innerText="Remove"
+                remove.style.color="red"
+                remove.addEventListener("click",function(){
+                removebtnfunc(userId,token)
+                })
+                let update=document.createElement("button")
+                update.innerText="UpdatePayMent"
+                update.style.color="green"
+                update.addEventListener("click",function(){
+                    updatePayment(token,userId)
+                })
+                
+            div.append(n,id,pay,w,ps,update,remove)
+            document.querySelector("#list").append(div)
+            
+    })});}else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
+        }else{
+            response.json().then(data => alert(data.message));
+            window.location.href="AdminMethod.html"
+        }
+    })
+}
+let updatePayment=(token,id)=>{
+    let choice= confirm("Are You Sure ?");
+    if(choice){
+        fetch(`http://localhost:8080/admin/uppay/${id}`, {
+
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "content-type": "application/json"
+            }
+            
+        }).then(response => {
+            if(response.status == 200){
+                response.text().then(data => {
+                    alert(data)
+                    window.location.reload()
+                })
+                
+                
+        
+            }else if(response.status == 401){
+                    alert("Session expired .")
+                    window.location.href="adminLogin.html"
+            }else{
+                response.json().then(data => alert(data.message));
+                window.location.reload()
+            }
+        })
+    }
+
+}
+
+
 //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 let getAdminById=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
@@ -708,6 +1010,7 @@ let getAdminById=()=>{
         if(response.status == 200){
             response.json().then(data => {
           //  console.log(data);
+            document.querySelector("#list").innerHTML=[]
             let el=data
                 let div=document.createElement("div")
                 let n=document.createElement("h3")
@@ -736,9 +1039,12 @@ let getAdminById=()=>{
                 })
             div.append(n,id,e,m,D,a,update,remove)
             document.querySelector("#list").append(div)
-});
+});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -768,9 +1074,12 @@ let removeAdmin=(userId,token)=>{
        
             location.reload();
             //getAdminById();
-
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -812,10 +1121,15 @@ let updateAdmin=()=>{
             response.json().then(data => {
               //  console.log(data);
                 alert("Admin sucessfully updated with id: "+data.id)
+                localStorage.setItem("admin",JSON.stringify(data))
                 window.location.href="AdminMethod.html"
             });
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -836,9 +1150,8 @@ let allAdmin=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
+                document.querySelector("#list").innerHTML=[]
                 data.forEach(({name,DOB,address,email,mobile,id},i)=> {
-                
-                    //  document.querySelector("#list").innerHTML=[]
                       let div=document.createElement("div")
                       let n=document.createElement("h3")
                       n.innerText="Name : "+name
@@ -867,9 +1180,12 @@ let allAdmin=()=>{
                 })
             div.append(n,uid,e,m,D,a,update,remove)
             document.querySelector("#list").append(div)
-})});
+})});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -898,8 +1214,12 @@ let addFloor=()=>{
               console.log(data);
                 alert("Sucessfully registered in library with Id :-"+lid)
             });
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 
@@ -933,8 +1253,12 @@ let addLibrary=()=>{
               console.log(data);
                 alert("Sucessfully registered library with Id :-"+labId)
             });
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -951,10 +1275,10 @@ let AllLibrary=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-                console.log(data);
+                //console.log(data);
+                document.querySelector("#list").innerHTML=[]
+                document.querySelector("#size").innerText+=data.length
                 data.forEach(({name,address,labId,floorList},i)=> {
-                
-                    //  document.querySelector("#list").innerHTML=[]
                     let div=document.createElement("div")
                     let n=document.createElement("h3")
                     n.innerText="Name : "+name
@@ -993,9 +1317,12 @@ let AllLibrary=()=>{
                     })
             div.append(n,uid,a,update,remove,addFl,showFl)
             document.querySelector("#list").append(div)
-})});
+})});   }else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -1013,10 +1340,10 @@ let showFloor=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-                console.log(data);
+                //console.log(data);
+                document.querySelector("#list").innerHTML=[]
+                document.querySelector("#size").innerText+=data.length
                 data.forEach(({name,floorNo,shiftList},i)=> {
-                
-                    //  document.querySelector("#list").innerHTML=[]
                     let div=document.createElement("div")
                     let n=document.createElement("h3")
                     n.innerText="Name : "+name
@@ -1050,14 +1377,109 @@ let showFloor=()=>{
                     window.location.href="showShifts.html"
                     
                     })
-            div.append(n,uid,update,remove,addsft,showF)
+                    let showStu=document.createElement("button")
+                    showStu.innerText="ShowStudent"
+                    showStu.style.color="green"
+                    showStu.addEventListener("click",function(){
+                    localStorage.setItem("floorNo",JSON.stringify(floorNo))
+                    window.location.href="showFloorStudent.html"
+                    })
+            div.append(n,uid,update,remove,addsft,showF,showStu)
             document.querySelector("#list").append(div)
-})});
+})});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
+
+let showFloorStudent=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let floor=JSON.parse(localStorage.getItem("floorNo"))
+    let url=`http://localhost:8080/admin/studentfl/${floor}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+           // console.log(data);
+           document.querySelector("#list").innerHTML=[]
+           document.getElementById("sum").innerText="Total student : "+data.length
+           data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
+              
+            let div=document.createElement("div")
+              let n=document.createElement("h3")
+              n.innerText="Name : "+name
+              let id=document.createElement("h4")
+              id.innerText="User Id : "+userId
+              let e=document.createElement("h4")
+              e.innerText="Email : "+email
+              let m=document.createElement("h4")
+              m.innerText="Mobile : "+mobile
+              let D=document.createElement("h4")
+              D.innerText="DOB : "+DOB
+              let a=document.createElement("h4")
+              a.innerText="Address : "+address
+              let pay=document.createElement("h4")
+              pay.innerText="Payment : "+payment
+              let w=document.createElement("h4")
+              w.innerText="WantedShift : "+wantedShift
+              let ps=document.createElement("h4")
+              ps.innerText="ProvidedShift : "+providedShift
+              let remove=document.createElement("button")
+                  remove.innerText="Remove"
+                  remove.style.color="red"
+                  remove.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let update=document.createElement("button")
+                  update.innerText="Update"
+                  update.style.color="green"
+                  update.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let seat=document.createElement("button")
+              seat.innerText="SetSeat"
+              seat.style.color="green"
+              seat.addEventListener("click",function(){
+                  setSeat(userId,token)
+              })
+              let rseat=document.createElement("button")
+              rseat.innerText="RemoveSeat"
+              rseat.style.color="red"
+              rseat.addEventListener("click",function(){
+                  removeSeat(userId,token)
+              })
+              let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+          div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
+          document.querySelector("#list").append(div)
+          
+  })});
+}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
+        }else{
+            response.json().then(data => alert(data.message));
+            window.location.href="showFloor.html"
+        }
+    })
+}
+
 let updateLibrary=()=>{
     let lid=JSON.parse(localStorage.getItem("labId"))
     let token=JSON.parse(localStorage.getItem("jwtToken"))
@@ -1082,8 +1504,12 @@ let updateLibrary=()=>{
     }).then(response => {
         if(response.status == 200){
            alert("Updated .")
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -1106,9 +1532,12 @@ let removeLibrary=(id,token)=>{
        
             location.reload();
             //getAdminById();
-
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -1132,9 +1561,12 @@ let removeFloor=(id,token)=>{
        
             location.reload();
             //getAdminById();
-
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -1154,8 +1586,12 @@ let editName=(fl,token)=>{
         if(response.status == 200){
            alert("Updated .")
            location.reload()
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
     } else {
@@ -1196,8 +1632,12 @@ let addShift=()=>{
               console.log(data);
                 alert("Sucessfully registered shift with floor Id :-"+fn)
             });
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -1216,15 +1656,15 @@ let showShifts=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-                console.log(data);
+                //console.log(data);
+                document.querySelector("#list").innerHTML=[]
+                document.querySelector("#size").innerText+=data.length
                 data.forEach(({shiftName,startTime,endTime,shiftId,seatList},i)=> {
-                
-                    //  document.querySelector("#list").innerHTML=[]
                     let div=document.createElement("div")
                     let n=document.createElement("h3")
                     n.innerText="Name : "+shiftName
                     let uid=document.createElement("h4")
-                    uid.innerText="Floor Id : "+shiftId
+                    uid.innerText="Shift Id : "+shiftId
                     let st=document.createElement("h4")
                     st.innerText="Start : "+startTime
                     let et=document.createElement("h4")
@@ -1254,13 +1694,106 @@ let showShifts=()=>{
                     showSt.addEventListener("click",function(){
                     localStorage.setItem("ShiftNo",JSON.stringify(shiftId))
                     window.location.href="showSeats.html"
-                    
                     })
-            div.append(n,uid,st,et,update,remove,addSt,showSt)
+                    let showStu=document.createElement("button")
+                    showStu.innerText="ShowStudent"
+                    showStu.style.color="green"
+                    showStu.addEventListener("click",function(){
+                    localStorage.setItem("ShiftNo",JSON.stringify(shiftId))
+                    window.location.href="showStudent.html"
+                    })
+            div.append(n,uid,st,et,update,remove,addSt,showSt,showStu)
             document.querySelector("#list").append(div)
-})});
+})});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
+        }
+    })
+}
+
+let showStudent=()=>{
+    let token=JSON.parse(localStorage.getItem("jwtToken"))
+    let shift=JSON.parse(localStorage.getItem("ShiftNo"))
+    let url=`http://localhost:8080/admin/studentshift/${shift}`
+    fetch(url, {
+        method: "GET", // Change the HTTP method as needed
+        headers: {
+            "Authorization": `Bearer ${token}`
+          //  "Content-Type": "application/json",
+        }
+    })
+    .then(response => {
+        if(response.status == 200){
+            response.json().then(data => {
+           // console.log(data);
+           document.querySelector("#list").innerHTML=[]
+           document.getElementById("sum").innerText="Total student : "+data.length
+           data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId},i)=> {
+              
+            let div=document.createElement("div")
+              let n=document.createElement("h3")
+              n.innerText="Name : "+name
+              let id=document.createElement("h4")
+              id.innerText="User Id : "+userId
+              let e=document.createElement("h4")
+              e.innerText="Email : "+email
+              let m=document.createElement("h4")
+              m.innerText="Mobile : "+mobile
+              let D=document.createElement("h4")
+              D.innerText="DOB : "+DOB
+              let a=document.createElement("h4")
+              a.innerText="Address : "+address
+              let pay=document.createElement("h4")
+              pay.innerText="Payment : "+payment
+              let w=document.createElement("h4")
+              w.innerText="WantedShift : "+wantedShift
+              let ps=document.createElement("h4")
+              ps.innerText="ProvidedShift : "+providedShift
+              let remove=document.createElement("button")
+                  remove.innerText="Remove"
+                  remove.style.color="red"
+                  remove.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let update=document.createElement("button")
+                  update.innerText="Update"
+                  update.style.color="green"
+                  update.addEventListener("click",function(){
+                    localStorage.setItem("UserId",JSON.stringify(userId))
+                    window.location.href="userUpdate.html"
+              })
+              let seat=document.createElement("button")
+              seat.innerText="SetSeat"
+              seat.style.color="green"
+              seat.addEventListener("click",function(){
+                  setSeat(userId,token)
+              })
+              let rseat=document.createElement("button")
+              rseat.innerText="RemoveSeat"
+              rseat.style.color="red"
+              rseat.addEventListener("click",function(){
+                  removeSeat(userId,token)
+              })
+              let seatM=document.createElement("button")
+                seatM.innerText="SetSeatManual"
+                seatM.style.color="green"
+                seatM.addEventListener("click",function(){
+                    setSeatManual(userId,token)
+                })
+          div.append(n,id,e,m,D,a,pay,w,ps,update,remove,seat,rseat,seatM)
+          document.querySelector("#list").append(div)
+          
+  })});
+    }else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
+        }else{
+            response.json().then(data => alert(data.message));
+            window.location.href="showShifts.html"
         }
     })
 }
@@ -1284,9 +1817,12 @@ let removeShift=(id,token)=>{
        
             location.reload();
             //getAdminById();
-
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
@@ -1308,8 +1844,13 @@ let addSeat=(shiftId,token)=>{
               console.log(data);
                 alert("Sucessfully registered seat with shift Id :-"+shiftId)
             });
+
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -1338,6 +1879,10 @@ let updateSeat=(shiftId,token)=>{
         if(response.status == 200){
            alert("Updated .")
            location.reload()
+
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
         }
@@ -1361,10 +1906,10 @@ let showSeats=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-                console.log(data);
+               // console.log(data);
+                document.querySelector("#list").innerHTML=[]
+                document.querySelector("#size").innerText+=data.length
                 data.forEach(({floor,seatNo},i)=> {
-                
-                    //  document.querySelector("#list").innerHTML=[]
                     let div=document.createElement("div")
                     let uid=document.createElement("h4")
                     uid.innerText="Floor Id : "+floor
@@ -1378,9 +1923,12 @@ let showSeats=()=>{
                     })
             div.append(uid,st,remove)
             document.querySelector("#list").append(div)
-})});
+})});}else if(response.status == 401){
+    alert("Session expired .")
+    window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
+            window.location.reload()
         }
     })
 }
@@ -1404,10 +1952,15 @@ let deleteSeat=(seatNo,token)=>{
        
             location.reload();
             //getAdminById();
-
+        }else if(response.status == 401){
+            alert("Session expired .")
+            window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
+        window.location.reload()
     }
 })
     }
 }
+
+//user/////////////////////
