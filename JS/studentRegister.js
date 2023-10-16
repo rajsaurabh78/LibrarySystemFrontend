@@ -89,7 +89,7 @@ let admFun=()=>{
         if(response.status == 201){
             response.json().then(data => {
               //  console.log(data);
-                alert("Student sucessfully registered with email: "+data.id)
+                alert("Student sucessfully registered with id: "+data.id)
             });
         }else{
             response.json().then(data => alert(data.message));

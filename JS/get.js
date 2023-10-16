@@ -870,7 +870,7 @@ let getAllStudentWithNoSeatNo=()=>{
             window.location.href="adminLogin.html"
         }else{
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.href="AdminMethod.html"
         }
     })
 }
@@ -1250,8 +1250,8 @@ let addLibrary=()=>{
     }).then(response => {
         if(response.status == 201){
             response.json().then(data => {
-              console.log(data);
-                alert("Sucessfully registered library with Id :-"+labId)
+              //console.log(data);
+                alert("Sucessfully registered library with Id :-"+data.labId)
             });
         }else if(response.status == 401){
             alert("Session expired .")
