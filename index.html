@@ -4,19 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            margin: auto;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 400px;
+            width: 400px;
+            border: 2px solid green;
+        }
+        button,input{
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover,input:hover{
+            background-color: #316934;
+        }
+    </style>
 </head>
 <body>
-    <a href="registerStudent.html"><button>AddStudent</button></a>
-    <input type="submit" value="Admin" onclick="adminFun()">
-    <input type="submit" value="Student" onclick="userFun()">
-    <!-- <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a>
-    <a href=""><button></button></a> -->
+    <h1>Welcome to library system</h1>
+    <a href="registerStudent.html"><button>signUp</button></a>
+    <input type="submit" value="Admin login" onclick="adminFun()">
+    <input type="submit" value="Student login" onclick="userFun()">
 </body>
 <script src="./JS/studentRegister.js"></script>
 </html>

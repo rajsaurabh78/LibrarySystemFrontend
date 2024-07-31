@@ -9,13 +9,13 @@ let stuFun=()=>{
     let Second=document.getElementById("Second")
     let Third=document.getElementById("Third")
     if(First.checked){
-        shift+=First.value+" , "
+        shift+=First.value
     }if(Second.checked){
-        shift+=Second.value+" , "
+        shift+=Second.value
     }if(Third.checked){
         shift+=Third.value
     }
-//console.log(shift);
+// console.log(shift);
     //let shift=document.getElementById("shift").value
     let name=document.getElementById("name").value
     let address=document.getElementById("address").value
@@ -49,6 +49,7 @@ let stuFun=()=>{
             response.json().then(data => {
               //  console.log(data);
                 alert("Student sucessfully registered with email: "+data.email)
+                window.location.reload()
             });
         }else{
             response.json().then(data => alert(data.message));
@@ -109,7 +110,7 @@ let aLogin=()=>{
     let base64Credentials = btoa(credentials);
 
      fetch(url, {
-        method: "GET", // Change the HTTP method as needed
+        method: "GET", 
         headers: {
             "Authorization": `Basic ${base64Credentials}`
         }
@@ -118,7 +119,8 @@ let aLogin=()=>{
         if (response.status == 202) {
             response.json().then(data => {
                 localStorage.setItem("jwtToken",JSON.stringify(response.headers.get("Authorization")));
-                localStorage.setItem("admin",JSON.stringify(data));
+              //  localStorage.setItem("admin",JSON.stringify(data));
+              alert("Successfully loged in.")
                 window.location.href="AdminMethod.html"
             });
         
@@ -265,7 +267,6 @@ let updateOwnProfile=()=>{
 }
 let adminFun=()=>{
     let tk=JSON.parse(localStorage.getItem("jwtToken"))
-    console.log(tk);
     if(tk==null){
         window.location.href="adminLogin.html"
     }else{
@@ -281,33 +282,52 @@ let userFun=()=>{
     }
 }
 let getAdminProfile=()=>{
-    let el=JSON.parse(localStorage.getItem("admin"))
-        document.querySelector("#list").innerHTML=[]
-        let div=document.createElement("div")
-        let n=document.createElement("h3")
-        n.innerText="Name : "+el.name
-        let id=document.createElement("h4")
-        id.innerText="Admin Id : "+el.id
-        let e=document.createElement("h4")
-        e.innerText="Email : "+el.email
-        let m=document.createElement("h4")
-        m.innerText="Mobile : "+el.mobile
-        let D=document.createElement("h4")
-        D.innerText="DOB : "+el.DOB
-        let a=document.createElement("h4")
-        let remove=document.createElement("button")
-            remove.innerText="Remove"
-            remove.style.color="red"
-            remove.addEventListener("click",function(){
-        removebtnfunc(el.userId,token)
-        })
-        let update=document.createElement("button")
-            update.innerText="Update"
-            update.style.color="green"
-            update.addEventListener("click",function(){
-            localStorage.setItem("adminId",JSON.stringify(el.id))
-            window.location.href="updateAdmin.html"
-        })
-    div.append(n,id,e,m,D,a,update,remove)
-    document.querySelector("#list").append(div)
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let url = "http://localhost:8080/admin/profile";
+
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            response.json().then(el => {
+
+            document.querySelector("#list").innerHTML=[]
+
+            let div=document.createElement("div")
+            let n=document.createElement("h3")
+            n.innerText="Name : "+el.name
+            let id=document.createElement("h4")
+            id.innerText="Admin Id : "+el.id
+            let e=document.createElement("h4")
+            e.innerText="Email : "+el.email
+            let m=document.createElement("h4")
+            m.innerText="Mobile : "+el.mobile
+            let D=document.createElement("h4")
+            D.innerText="DOB : "+el.DOB
+            let a=document.createElement("h4")
+            let update=document.createElement("button")
+                update.innerText="Update"
+                update.style.color="green"
+                update.addEventListener("click",function(){
+                localStorage.setItem("adminId",JSON.stringify(el.id))
+                window.location.href="updateAdmin.html"
+            })
+            div.append(n,id,e,m,D,a,update)
+            document.querySelector("#list").append(div)
+        });
+    } else if (response.status === 500) {
+        alert("Session expired.");
+        window.location.href = "index.html";
+    } else {
+        response.json().then(data => alert(data.message));
+        window.location.reload();
+    }
+    })
+    .catch(error => {
+        alert('An error occurred while fetching the profile.');
+    });
 }
