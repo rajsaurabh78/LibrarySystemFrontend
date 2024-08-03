@@ -61,3 +61,11 @@ button{
     /* margin-left:100px; */
     display: flex;
 }
+img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
