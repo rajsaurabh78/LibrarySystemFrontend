@@ -1308,7 +1308,7 @@ let AllLibrary=()=>{
                 tbody.innerHTML = ""; // Clear existing rows
                 document.querySelector("#size").innerText = `Total Libraries: ${data.length}`;
 
-                data.forEach(({ name, address, labId, photoUrl }, i) => {
+                data.forEach(({ name, address, labId }, i) => {
                     let row = document.createElement("tr");
 
                     let serialNoCell = document.createElement("td");

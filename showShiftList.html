@@ -3,16 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./CSS/register.css">
+    <!-- <link rel="stylesheet" href="./CSS/register.css"> -->
     <title>Document</title>
     <title>Page with Auto-Invoked Function</title>
     <script src="./JS/user.js"></script>
+    <style>
+        /* General table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        /* Nested table styling */
+        .nested-table {
+            font-size: 0.8em;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            width: 90%;
+            margin-left: 5%;
+            background-color: #f9f9f9;
+        }
+        .nested-table th, .nested-table td {
+            padding: 4px;
+        }
+    
+        /* Close button styling */
+        .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+            color: red;
+            background: none;
+            border: none;
+        }
+        .close-btn:hover {
+            color: darkred;
+        }
+    
+        /* Main table background color */
+        #libraryTable {
+            background-color: #e0f7fa;
+        }
+    </style>
+    
 </head>
 <body>
-    <h1>Shifts</h1>
     <h1 id="size"></h1>
     <a href="userUpdate.html"><button>Home</button></a>
-    <a href="getAllDetails.html"><button>Back</button></a>
+    <button onclick="window.history.back()">Back</button>
     <div id="lists"></div>
     
 </body>
