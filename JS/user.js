@@ -1,3 +1,4 @@
+
 let allDetails=()=>{
     let token = JSON.parse(localStorage.getItem("UserToken"));
 let url = `http://localhost:8080/students/allDetails`;
@@ -96,8 +97,8 @@ fetch(url, {
                             showShift.style.color = "green";
 
                             showShift.addEventListener("click", function() {
-                                localStorage.setItem("shiftList", JSON.stringify(shiftList));
-                                window.location.href = "showShiftList.html";
+                                const shiftData = encodeURIComponent(JSON.stringify(shiftList));
+                                window.location.href = `showShiftList.html?shiftData=${shiftData}&floorName=${name}`;
                             });
 
                             floorActionsCell.append(showShift);
@@ -127,8 +128,17 @@ fetch(url, {
 });
 
 }
+function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
 let showShiftList=()=>{
-    let data = JSON.parse(localStorage.getItem("shiftList"));
+    const shiftData = decodeURIComponent(getQueryParameter('shiftData'));
+    const floorName = getQueryParameter('floorName');
+    const data = JSON.parse(shiftData);
+
+
+   // let data = JSON.parse(localStorage.getItem("shiftList"));
     let table = document.createElement("table");
     table.id = "libraryTable";
 
@@ -182,7 +192,7 @@ let showShiftList=()=>{
                 let nth1 = document.createElement("th");
                 nth1.innerText = "Serial No.";
                 let nth2 = document.createElement("th");
-                nth2.innerText = "Floor No.";
+                nth2.innerText = "Floor Name";
                 let nth3 = document.createElement("th");
                 nth3.innerText = "Seat No.";
                 nestedTr.append(nth1, nth2, nth3);
@@ -193,7 +203,7 @@ let showShiftList=()=>{
                     let ntd1 = document.createElement("td");
                     ntd1.innerText = index + 1;
                     let ntd2 = document.createElement("td");
-                    ntd2.innerText = floor;
+                    ntd2.innerText = floorName;
                     let ntd3 = document.createElement("td");
                     ntd3.innerText = seatNo;
                     nestedTr1.append(ntd1, ntd2, ntd3);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./CSS/register.css">
+    <!-- <link rel="stylesheet" href="./CSS/register.css"> -->
     <title>Document</title>
     <title>Page with Auto-Invoked Function</title>
     <script src="./JS/get.js"></script>
@@ -108,13 +108,14 @@
         }
 
         #libraryTable th, #libraryTable td {
-            border: 1px solid #ddd;
+            border: 1px solid #fcf0f0;
             padding: 8px;
             text-align: center;
+            background-color: #c27c7c;
         }
 
         #libraryTable th {
-            background-color: #f2f2f2;
+            background-color: #4bb820;
             font-weight: bold;
         }
 
@@ -124,8 +125,8 @@
             object-fit: cover;
         }
 
-        #libraryTable button {
-            margin: 0 5px;
+        #top button {
+            padding: 1px 20px;
         }
         #top{
             display: flex;
@@ -141,7 +142,7 @@
 <body>
     <div id="top">
         <h1 id="size">Total :</h1>
-        <a href="window.history.reload()"> Back</a>
+        <button onclick="window.history.back()">Back</button>
 
     </div>
     

@@ -1,9 +1,9 @@
 let stuFun=()=>{
-    let payment=false;
-    let pay = document.getElementById("payment");
-    if (pay.checked) {
-    payment=pay.value
-    }
+    // let payment=false;
+    // let pay = document.getElementById("payment");
+    // if (pay.checked) {
+    // payment=pay.value
+    // }
     let shift="";
     let First=document.getElementById("First")
     let Second=document.getElementById("Second")
@@ -23,9 +23,7 @@ let stuFun=()=>{
     let dob=document.getElementById("dob").value
     let pass=document.getElementById("password").value
     let mobile=document.getElementById("mobile").value
-   // let payment=pay.value
-//console.log(payment);
-   // console.log(dob)
+
     fetch("http://localhost:8080/register/addStudent", {
 
         method: "POST",
@@ -40,7 +38,7 @@ let stuFun=()=>{
             "mobile": mobile,
             "DOB":dob,
             "wantedShift":shift,
-            "payment":payment
+            "payment":'false'
             
         })
         
@@ -100,31 +98,3 @@ let admFun=()=>{
 
 }
 
-let sLogin=()=>{
-    let url = "http://localhost:8080/signIn";
-    let username =document.getElementById("email").value;
-    let password =document.getElementById("password").value;
-    let credentials = `${username}:${password}`;
-    let base64Credentials = btoa(credentials);
-
-     fetch(url, {
-        method: "GET", // Change the HTTP method as needed
-        headers: {
-            "Authorization": `Basic ${base64Credentials}`
-        }
-    })
-    .then(response => {
-        if (response.status == 202) {
-            response.json().then(data => {
-               // console.log(data);
-                localStorage.setItem("UserToken",JSON.stringify(response.headers.get("Authorization")));
-               // localStorage.setItem("data",JSON.stringify(data));
-              //  localStorage.setItem("userId",JSON.stringify(data.userId));
-                window.location.href="UserMethod.html"
-              });    
-        } else {
-            alert("Authentication failed" );
-        }
-    })
-
-}

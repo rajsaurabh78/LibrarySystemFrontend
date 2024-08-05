@@ -3,13 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./CSS/register.css">
+    <!-- <link rel="stylesheet" href="./CSS/register.css"> -->
     <title>Document</title>
     <title>Page with Auto-Invoked Function</title>
     <script src="./JS/get.js"></script>
+    <style>
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .student-table th, .student-table td {
+            border: 2px solid #ddd;
+            padding: 8px;
+            background-color: #a5af4c;
+        }
+
+        .student-table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .student-table td {
+            text-align: center;
+        }
+
+        .user-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .remove-btn, .set-seat-btn, .remove-seat-btn, .set-seat-manual-btn {
+            margin: 5px;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background-color: red;
+            color: white;
+        }
+
+        .set-seat-btn, .set-seat-manual-btn {
+            background-color: green;
+            color: white;
+        }
+
+        .remove-seat-btn {
+            background-color: orange;
+            color: white;
+        }
+
+        .remove-btn:hover, .set-seat-btn:hover, .remove-seat-btn:hover, .set-seat-manual-btn:hover {
+            opacity: 0.8;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Students</h1>
     <h1 id="sum"></h1>
     <a href="AdminMethod.html"><button>Home</button></a>
     <a href="showShifts.html"><button>Back</button></a>
