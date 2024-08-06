@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./CSS/register.css">
+    <!-- <link rel="stylesheet" href="./CSS/register.css"> -->
     <title>Document</title>
     <title>Page with Auto-Invoked Function</title>
     <script src="./JS/get.js"></script>
@@ -42,6 +42,74 @@
             text-decoration: none;
             cursor: pointer;
         }
+        /* Styling for the floor table */
+        .floor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .floor-table th, .floor-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .floor-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .floor-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .floor-table img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px;
+        }
+
+        .remove-btn {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .update-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .add-shift-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .show-shifts-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .show-students-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
     </style>
 </head>
 <body>

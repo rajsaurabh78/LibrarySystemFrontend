@@ -51,69 +51,80 @@ let getAllStudentInSortingOrder=()=>{
         if(response.status == 200){
             response.json().then(data => {
           //  console.log(data);
-            document.querySelector("#list").innerHTML=[]
-            data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,seats,photoUrl},i)=> {
+            let tbody = document.querySelector("#studentTable tbody");
+            tbody.innerHTML = "";
+            document.getElementById("totalStudents").innerText = data.length;
+            data.forEach(({name, payment, wantedShift, providedShift, userId, photoUrl}, index) => {
+                let row = document.createElement("tr");
                 
-                
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+name
+                let serialNoCell = document.createElement("td");
+                serialNoCell.innerText = index + 1;
+
+                let photoCell = document.createElement("td");
                 let img = document.createElement("img");
                 img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
                 img.alt = "User Photo";
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+userId
-                let e=document.createElement("h4")
-                e.innerText="Email : "+email
-                let m=document.createElement("h4")
-                m.innerText="Mobile : "+mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+address
-                let p=document.createElement("h4")
-                p.innerText="Payment : "+payment
-                let w=document.createElement("h4")
-                w.innerText="WantedShift : "+wantedShift
-                let ps=document.createElement("h4")
-                ps.innerText="ProvidedShift : "+providedShift
-                console.log(seats);
-                let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                removebtnfunc(userId,token)
-                })
-                let Setseat=document.createElement("button")
-                Setseat.innerText="SetSeat"
-                Setseat.style.color="green"
-                Setseat.addEventListener("click",function(){
-                    setSeat(userId,token)
-                })
-                let rseat=document.createElement("button")
-                rseat.innerText="RemoveSeat"
-                rseat.style.color="red"
-                rseat.addEventListener("click",function(){
-                    removeSeat(userId,token)
-                })
-                let seatM=document.createElement("button")
-                seatM.innerText="SetSeatManual"
-                seatM.style.color="green"
-                seatM.addEventListener("click",function(){
-                    setSeatManual(userId,token)
-                })
-            div.append(img,n,id,e,m,D,a,p,w,ps,remove,Setseat,rseat,seatM)
-            document.querySelector("#list").append(div)
-            
-    })});}else if(response.status == 401){
-        alert("Session expired .")
-        window.location.href="adminLogin.html"
-        }else{
-            response.json().then(data => alert(data.message));
-            window.location.reload()
-        }
-    })
+                img.className = "user-photo";
+                photoCell.appendChild(img);
 
+                let nameCell = document.createElement("td");
+                nameCell.innerText = name;
+                
+                let idCell = document.createElement("td");
+                idCell.innerText = userId;
+                
+                let paymentCell = document.createElement("td");
+                paymentCell.innerText = payment;
+                
+                let wantedShiftCell = document.createElement("td");
+                wantedShiftCell.innerText = wantedShift;
+                
+                let providedShiftCell = document.createElement("td");
+                providedShiftCell.innerText = providedShift;
+                
+                let actionsCell = document.createElement("td");
+
+                let remove = document.createElement("button");
+                remove.innerText = "Remove";
+                remove.className = "remove-btn";
+                remove.addEventListener("click", function() {
+                    removebtnfunc(userId, token);
+                });
+
+                let seat = document.createElement("button");
+                seat.innerText = "Set Seat Auto";
+                seat.className = "set-seat-auto-btn";
+                seat.addEventListener("click", function() {
+                    setSeat(userId, token);
+                });
+
+                let rseat = document.createElement("button");
+                rseat.innerText = "Remove Seat";
+                rseat.className = "remove-seat-btn";
+                rseat.addEventListener("click", function() {
+                    removeSeat(userId, token);
+                });
+
+                let seatM = document.createElement("button");
+                seatM.innerText = "Set Full Seat";
+                seatM.className = "set-seat-manual-btn";
+                seatM.addEventListener("click", function() {
+                    setSeatManual(userId, token);
+                });
+
+                actionsCell.append(remove, seat, rseat, seatM);
+                row.append(serialNoCell, photoCell, nameCell, idCell, paymentCell, wantedShiftCell, providedShiftCell, actionsCell);
+                tbody.append(row);
+            });
+        });
+    } else if(response.status == 401) {
+        alert("Session expired.");
+        window.location.href = "adminLogin.html";
+    } else {
+        response.json().then(data => alert(data.message));
+        window.location.href = "AdminMethod.html";
+    }
+    });
 }
 
 let removebtnfunc=(userId,token)=>{
@@ -282,161 +293,270 @@ let updateUser=()=>{
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 let getAllSortedStudentWithPagination=()=>{
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let p=document.getElementById("page").value
-    let s=document.getElementById("size").value
-    let f=document.getElementById("field").value
-    let d=document.getElementById("dirn").value
-   // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/stu/${p}/${s}?field=${f}&direction=${d}`
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let p = document.getElementById("page").value;
+    let s = document.getElementById("size").value;
+    let f = document.getElementById("field").value;
+    let d = document.getElementById("dirn").value;
+
+    let url = `http://localhost:8080/admin/stu/${p}/${s}?field=${f}&direction=${d}`;
+
     fetch(url, {
-        method: "GET", // Change the HTTP method as needed
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
         }
     })
     .then(response => {
-        if(response.status == 200){
+        if (response.status == 200) {
             response.json().then(data => {
-           // console.log(data);
-            document.querySelector("#list").innerHTML=[]
-            data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,photoUrl},i)=> {
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+name
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+userId
-                let e=document.createElement("h4")
-                e.innerText="Email : "+email
-                let m=document.createElement("h4")
-                let img = document.createElement("img");
-                img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-                img.alt = "User Photo";
-                m.innerText="Mobile : "+mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+address
-                let pay=document.createElement("h4")
-                pay.innerText="Payment : "+payment
-                let w=document.createElement("h4")
-                w.innerText="WantedShift : "+wantedShift
-                let ps=document.createElement("h4")
-                ps.innerText="ProvidedShift : "+providedShift
-                let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                removebtnfunc(userId,token)
-                })
-               
-                let seat=document.createElement("button")
-                seat.innerText="SetSeat"
-                seat.style.color="green"
-                seat.addEventListener("click",function(){
-                    setSeat(userId,token)
-                })
-                let rseat=document.createElement("button")
-                rseat.innerText="RemoveSeat"
-                rseat.style.color="red"
-                rseat.addEventListener("click",function(){
-                    removeSeat(userId,token)
-                })
-                let seatM=document.createElement("button")
-                seatM.innerText="SetSeatManual"
-                seatM.style.color="green"
-                seatM.addEventListener("click",function(){
-                    setSeatManual(userId,token)
-                })
-            div.append(img,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-            document.querySelector("#list").append(div)
-            
-    })});}else if(response.status == 401){
-        alert("Session expired .")
-        window.location.href="adminLogin.html"
-        }else{
+                document.querySelector("#list").innerHTML = "";
+
+                let table = document.createElement("table");
+                table.className = "student-table";
+
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thPayment = document.createElement("th");
+                thPayment.innerText = "Payment";
+                let thWantedShift = document.createElement("th");
+                thWantedShift.innerText = "Wanted Shift";
+                let thProvidedShift = document.createElement("th");
+                thProvidedShift.innerText = "Provided Shift";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ name, DOB, address, email, mobile, payment, wantedShift, providedShift, userId, photoUrl }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = userId;
+                    let tdPhoto = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.src = photoUrl || defaultUrl;
+                    img.alt = "User Photo";
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+                    let tdPayment = document.createElement("td");
+                    tdPayment.innerText = payment;
+                    let tdWantedShift = document.createElement("td");
+                    tdWantedShift.innerText = wantedShift;
+                    let tdProvidedShift = document.createElement("td");
+                    tdProvidedShift.innerText = providedShift;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removebtnfunc(userId, token);
+                    });
+
+                    let seatBtn = document.createElement("button");
+                    seatBtn.innerText = "Set Seat";
+                    seatBtn.className = "action-btn set-seat-btn";
+                    seatBtn.addEventListener("click", function () {
+                        setSeat(userId, token);
+                    });
+
+                    let removeSeatBtn = document.createElement("button");
+                    removeSeatBtn.innerText = "Remove Seat";
+                    removeSeatBtn.className = "action-btn remove-seat-btn";
+                    removeSeatBtn.addEventListener("click", function () {
+                        removeSeat(userId, token);
+                    });
+
+                    let seatMBtn = document.createElement("button");
+                    seatMBtn.innerText = "Set Full Seat";
+                    seatMBtn.className = "action-btn set-seat-manual-btn";
+                    seatMBtn.addEventListener("click", function () {
+                        setSeatManual(userId, token);
+                    });
+
+                    tdActions.append(removeBtn, seatBtn, removeSeatBtn, seatMBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+                    tbody.append(tr);
+                });
+
+                table.append(tbody);
+                document.querySelector("#list").append(table);
+            });
+        } else if (response.status == 401) {
+            alert("Session expired.");
+            window.location.href = "adminLogin.html";
+        } else {
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.reload();
         }
-    })
+    });
+
 
 }
 //================================================================
 let getStudentById=()=>{
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let user=document.getElementById("id").value
-    let url=`http://localhost:8080/admin/students/${user}`
-    fetch(url, {
-        method: "GET", 
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        if(response.status == 200){
-            response.json().then(data => {
-       //     console.log(data);
-                document.querySelector("#list").innerHTML=[]
-                let el=data
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+el.name
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+el.userId
-                let e=document.createElement("h4")
-                e.innerText="Email : "+el.email
-                let m=document.createElement("h4")
-                m.innerText="Mobile : "+el.mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+el.DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+el.address
-                let pay=document.createElement("h4")
-                pay.innerText="Payment : "+el.payment
-                let w=document.createElement("h4")
-                w.innerText="WantedShift : "+el.wantedShift
-                let ps=document.createElement("h4")
-                ps.innerText="ProvidedShift : "+el.providedShift
-                let photo = document.createElement("img");
-                photo.src = el.photoUrl || defaultUrl; // Replace with the actual default photo URL
-                photo.className = "student-photo";
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+let user = document.getElementById("id").value;
+let url = `http://localhost:8080/admin/students/${user}`;
 
-                let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                removebtnfunc(el.userId,token)
-                })
-                let seat=document.createElement("button")
-                seat.innerText="SetSeat"
-                seat.style.color="green"
-                seat.addEventListener("click",function(){
-                    setSeat(el.userId,token)
-                })
-                let rseat=document.createElement("button")
-                rseat.innerText="RemoveSeat"
-                rseat.style.color="red"
-                rseat.addEventListener("click",function(){
-                    removeSeat(el.userId,token)
-                })
-                let seatM=document.createElement("button")
-                seatM.innerText="SetSeatManual"
-                seatM.style.color="green"
-                seatM.addEventListener("click",function(){
-                    setSeatManual(el.userId,token)
-                })
-            div.append(photo,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-            document.querySelector("#list").append(div)
+fetch(url, {
+    method: "GET",
+    headers: {
+        "Authorization": `Bearer ${token}`
+    }
+})
+.then(response => {
+    if(response.status == 200){
+        response.json().then(data => {
+            document.querySelector("#list").innerHTML = "";
+            
+            let table = document.createElement("table");
+            table.className = "student-table";
+            
+            let thead = document.createElement("thead");
+            let trHead = document.createElement("tr");
+            
+            let thIndex = document.createElement("th");
+            thIndex.innerText = "S.No";
+            let thName = document.createElement("th");
+            thName.innerText = "Name";
+            let thId = document.createElement("th");
+            thId.innerText = "User ID";
+            let thPhoto = document.createElement("th");
+            thPhoto.innerText = "Photo";
+            let thEmail = document.createElement("th");
+            thEmail.innerText = "Email";
+            let thMobile = document.createElement("th");
+            thMobile.innerText = "Mobile";
+            let thDOB = document.createElement("th");
+            thDOB.innerText = "DOB";
+            let thAddress = document.createElement("th");
+            thAddress.innerText = "Address";
+            let thPayment = document.createElement("th");
+            thPayment.innerText = "Payment";
+            let thWantedShift = document.createElement("th");
+            thWantedShift.innerText = "Wanted Shift";
+            let thProvidedShift = document.createElement("th");
+            thProvidedShift.innerText = "Provided Shift";
+            let thActions = document.createElement("th");
+            thActions.innerText = "Actions";
+            
+            trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+            thead.append(trHead);
+            table.append(thead);
+            
+            let tbody = document.createElement("tbody");
+            
+            [data].forEach(({ name, DOB, address, email, mobile, payment, wantedShift, providedShift, userId, photoUrl }, i) => {
+                let tr = document.createElement("tr");
+                
+                let tdIndex = document.createElement("td");
+                tdIndex.innerText = i + 1;
+                let tdName = document.createElement("td");
+                tdName.innerText = name;
+                let tdId = document.createElement("td");
+                tdId.innerText = userId;
+                let tdPhoto = document.createElement("td");
+                let img = document.createElement("img");
+                img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+                img.alt = "User Photo";
+                img.className = "student-photo";
+                tdPhoto.appendChild(img);
+                let tdEmail = document.createElement("td");
+                tdEmail.innerText = email;
+                let tdMobile = document.createElement("td");
+                tdMobile.innerText = mobile;
+                let tdDOB = document.createElement("td");
+                tdDOB.innerText = DOB;
+                let tdAddress = document.createElement("td");
+                tdAddress.innerText = address;
+                let tdPayment = document.createElement("td");
+                tdPayment.innerText = payment;
+                let tdWantedShift = document.createElement("td");
+                tdWantedShift.innerText = wantedShift;
+                let tdProvidedShift = document.createElement("td");
+                tdProvidedShift.innerText = providedShift;
+                
+                let tdActions = document.createElement("td");
+                let removeBtn = document.createElement("button");
+                removeBtn.innerText = "Remove";
+                removeBtn.className = "remove-btn";
+                removeBtn.addEventListener("click", function(){
+                    removebtnfunc(userId, token);
+                });
+
+                let setSeatBtn = document.createElement("button");
+                setSeatBtn.innerText = "Set Seat";
+                setSeatBtn.className = "set-seat-btn";
+                setSeatBtn.addEventListener("click", function(){
+                    setSeat(userId, token);
+                });
+
+                let removeSeatBtn = document.createElement("button");
+                removeSeatBtn.innerText = "Remove Seat";
+                removeSeatBtn.className = "remove-seat-btn";
+                removeSeatBtn.addEventListener("click", function(){
+                    removeSeat(userId, token);
+                });
+
+                let setSeatManualBtn = document.createElement("button");
+                setSeatManualBtn.innerText = "Set Full Seat";
+                setSeatManualBtn.className = "set-seat-manual-btn";
+                setSeatManualBtn.addEventListener("click", function(){
+                    setSeatManual(userId, token);
+                });
+
+                tdActions.append(removeBtn, setSeatBtn, removeSeatBtn, setSeatManualBtn);
+                tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+                tbody.append(tr);
+            });
+            
+            table.append(tbody);
+            document.querySelector("#list").append(table);
         });
-    }else if(response.status == 401){
-        alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
-            response.json().then(data => alert(data.message));
-            // window.location.reload()
-        }
-    })
+    } else if(response.status == 401){
+        alert("Session expired.");
+        window.location.href = "adminLogin.html";
+    } else {
+        response.json().then(data => alert(data.message));
+        // window.location.reload();
+    }
+});
+
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -454,57 +574,112 @@ let getStudentBySeat=()=>{
         if(response.status == 200){
             response.json().then(data => {
            // console.log(data);
-            document.querySelector("#list").innerHTML=[]
-            let el=data
-            let div=document.createElement("div")
-            let n=document.createElement("h3")
-            n.innerText="Name : "+el.name
-            let id=document.createElement("h4")
-            id.innerText="User Id : "+el.userId
-            let img = document.createElement("img");
-            img.src = el.photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-            img.alt = "User Photo";
-            let e=document.createElement("h4")
-            e.innerText="Email : "+el.email
-            let m=document.createElement("h4")
-            m.innerText="Mobile : "+el.mobile
-            let D=document.createElement("h4")
-            D.innerText="DOB : "+el.DOB
-            let a=document.createElement("h4")
-            a.innerText="Address : "+el.address
-            let pay=document.createElement("h4")
-            pay.innerText="Payment : "+el.payment
-            let w=document.createElement("h4")
-            w.innerText="WantedShift : "+el.wantedShift
-            let ps=document.createElement("h4")
-            ps.innerText="ProvidedShift : "+el.providedShift
-            let remove=document.createElement("button")
-                remove.innerText="Remove"
-                remove.style.color="red"
-                remove.addEventListener("click",function(){
-            removebtnfunc(el.userId,token)
-            })
-            let seat=document.createElement("button")
-            seat.innerText="SetSeat"
-            seat.style.color="green"
-            seat.addEventListener("click",function(){
-                setSeat(el.userId,token)
-            })
-            let rseat=document.createElement("button")
-            rseat.innerText="RemoveSeat"
-            rseat.style.color="red"
-            rseat.addEventListener("click",function(){
-                removeSeat(el.userId,token)
-            })
-            let seatM=document.createElement("button")
-            seatM.innerText="SetSeatManual"
-            seatM.style.color="green"
-            seatM.addEventListener("click",function(){
-                setSeatManual(el.userId,token)
-            })
-            div.append(img,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-            document.querySelector("#list").append(div)
-    });
+           document.querySelector("#list").innerHTML = "";
+            
+           let table = document.createElement("table");
+           table.className = "student-table";
+           
+           let thead = document.createElement("thead");
+           let trHead = document.createElement("tr");
+           
+           let thIndex = document.createElement("th");
+           thIndex.innerText = "S.No";
+           let thName = document.createElement("th");
+           thName.innerText = "Name";
+           let thId = document.createElement("th");
+           thId.innerText = "User ID";
+           let thPhoto = document.createElement("th");
+           thPhoto.innerText = "Photo";
+           let thEmail = document.createElement("th");
+           thEmail.innerText = "Email";
+           let thMobile = document.createElement("th");
+           thMobile.innerText = "Mobile";
+           let thDOB = document.createElement("th");
+           thDOB.innerText = "DOB";
+           let thAddress = document.createElement("th");
+           thAddress.innerText = "Address";
+           let thPayment = document.createElement("th");
+           thPayment.innerText = "Payment";
+           let thWantedShift = document.createElement("th");
+           thWantedShift.innerText = "Wanted Shift";
+           let thProvidedShift = document.createElement("th");
+           thProvidedShift.innerText = "Provided Shift";
+           let thActions = document.createElement("th");
+           thActions.innerText = "Actions";
+           
+           trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+           thead.append(trHead);
+           table.append(thead);
+           
+           let tbody = document.createElement("tbody");
+           
+           [data].forEach(({ name, DOB, address, email, mobile, payment, wantedShift, providedShift, userId, photoUrl }, i) => {
+               let tr = document.createElement("tr");
+               
+               let tdIndex = document.createElement("td");
+               tdIndex.innerText = i + 1;
+               let tdName = document.createElement("td");
+               tdName.innerText = name;
+               let tdId = document.createElement("td");
+               tdId.innerText = userId;
+               let tdPhoto = document.createElement("td");
+               let img = document.createElement("img");
+               img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+               img.alt = "User Photo";
+               img.className = "student-photo";
+               tdPhoto.appendChild(img);
+               let tdEmail = document.createElement("td");
+               tdEmail.innerText = email;
+               let tdMobile = document.createElement("td");
+               tdMobile.innerText = mobile;
+               let tdDOB = document.createElement("td");
+               tdDOB.innerText = DOB;
+               let tdAddress = document.createElement("td");
+               tdAddress.innerText = address;
+               let tdPayment = document.createElement("td");
+               tdPayment.innerText = payment;
+               let tdWantedShift = document.createElement("td");
+               tdWantedShift.innerText = wantedShift;
+               let tdProvidedShift = document.createElement("td");
+               tdProvidedShift.innerText = providedShift;
+               
+               let tdActions = document.createElement("td");
+               let removeBtn = document.createElement("button");
+               removeBtn.innerText = "Remove";
+               removeBtn.className = "remove-btn";
+               removeBtn.addEventListener("click", function(){
+                   removebtnfunc(userId, token);
+               });
+
+               let setSeatBtn = document.createElement("button");
+               setSeatBtn.innerText = "Set Seat";
+               setSeatBtn.className = "set-seat-btn";
+               setSeatBtn.addEventListener("click", function(){
+                   setSeat(userId, token);
+               });
+
+               let removeSeatBtn = document.createElement("button");
+               removeSeatBtn.innerText = "Remove Seat";
+               removeSeatBtn.className = "remove-seat-btn";
+               removeSeatBtn.addEventListener("click", function(){
+                   removeSeat(userId, token);
+               });
+
+               let setSeatManualBtn = document.createElement("button");
+               setSeatManualBtn.innerText = "Set Full Seat";
+               setSeatManualBtn.className = "set-seat-manual-btn";
+               setSeatManualBtn.addEventListener("click", function(){
+                   setSeatManual(userId, token);
+               });
+
+               tdActions.append(removeBtn, setSeatBtn, removeSeatBtn, setSeatManualBtn);
+               tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+               tbody.append(tr);
+           });
+           
+           table.append(tbody);
+           document.querySelector("#list").append(table);
+       });
         }else if(response.status == 401){
             alert("Session expired .")
         window.location.href="adminLogin.html"
@@ -532,71 +707,120 @@ let getStudentByFloor=()=>{
         if(response.status == 200){
             response.json().then(data => {
            // console.log(data);
-           document.querySelector("#list").innerHTML=[]
-           document.getElementById("sum").innerText="Total student : "+data.length
-           data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,photoUrl},i)=> {
-              
-            let div=document.createElement("div")
-            let n=document.createElement("h3")
-            n.innerText="Name : "+name
-            let id=document.createElement("h4")
-            id.innerText="User Id : "+userId
-            let e=document.createElement("h4")
-            e.innerText="Email : "+email
+           document.querySelector("#list").innerHTML = "";
 
-            let img = document.createElement("img");
-            img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-            img.alt = "User Photo";
+                let table = document.createElement("table");
+                table.className = "student-table";
 
-            let m=document.createElement("h4")
-            m.innerText="Mobile : "+mobile
-            let D=document.createElement("h4")
-            D.innerText="DOB : "+DOB
-            let a=document.createElement("h4")
-            a.innerText="Address : "+address
-            let pay=document.createElement("h4")
-            pay.innerText="Payment : "+payment
-            let w=document.createElement("h4")
-            w.innerText="WantedShift : "+wantedShift
-            let ps=document.createElement("h4")
-            ps.innerText="ProvidedShift : "+providedShift
-            let remove=document.createElement("button")
-                remove.innerText="Remove"
-                remove.style.color="red"
-                remove.addEventListener("click",function(){
-                localStorage.setItem("UserId",JSON.stringify(userId))
-                window.location.href="userUpdate.html"
-            })
-            let seat=document.createElement("button")
-            seat.innerText="SetSeat"
-            seat.style.color="green"
-            seat.addEventListener("click",function(){
-                setSeat(userId,token)
-            })
-            let rseat=document.createElement("button")
-            rseat.innerText="RemoveSeat"
-            rseat.style.color="red"
-            rseat.addEventListener("click",function(){
-                removeSeat(userId,token)
-            })
-            let seatM=document.createElement("button")
-            seatM.innerText="SetSeatManual"
-            seatM.style.color="green"
-            seatM.addEventListener("click",function(){
-                setSeatManual(userId,token)
-            })
-          div.append(img,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-          document.querySelector("#list").append(div)
-          
-  })});
-}else if(response.status == 401){
-    alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
-            response.json().then(data => alert(data.message));
-            window.location.reload()
-        }
-    })
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thPayment = document.createElement("th");
+                thPayment.innerText = "Payment";
+                let thWantedShift = document.createElement("th");
+                thWantedShift.innerText = "Wanted Shift";
+                let thProvidedShift = document.createElement("th");
+                thProvidedShift.innerText = "Provided Shift";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ name, DOB, address, email, mobile, userId, photoUrl, payment, wantedShift, providedShift }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = userId;
+                    let tdPhoto = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+                    img.alt = "User Photo";
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+                    let tdPayment = document.createElement("td");
+                    tdPayment.innerText = payment;
+                    let tdWantedShift = document.createElement("td");
+                    tdWantedShift.innerText = wantedShift;
+                    let tdProvidedShift = document.createElement("td");
+                    tdProvidedShift.innerText = providedShift;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removebtnfunc(userId, token);
+                    });
+
+                    let seatBtn = document.createElement("button");
+                    seatBtn.innerText = "Set Seat";
+                    seatBtn.className = "action-btn seat-btn";
+                    seatBtn.addEventListener("click", function () {
+                        setSeat(userId, token);
+                    });
+
+                    let rseatBtn = document.createElement("button");
+                    rseatBtn.innerText = "Remove Seat";
+                    rseatBtn.className = "action-btn remove-seat-btn";
+                    rseatBtn.addEventListener("click", function () {
+                        removeSeat(userId, token);
+                    });
+
+                    let seatMBtn = document.createElement("button");
+                    seatMBtn.innerText = "Set Full Seat";
+                    seatMBtn.className = "action-btn set-seat-manual-btn";
+                    seatMBtn.addEventListener("click", function () {
+                        setSeatManual(userId, token);
+                    });
+
+                    tdActions.append(removeBtn, seatBtn, rseatBtn, seatMBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                document.querySelector("#list").appendChild(table);
+            });
+    }else if(response.status == 401){
+        alert("Session expired .")
+        window.location.href="adminLogin.html"
+            }else{
+                response.json().then(data => alert(data.message));
+                window.location.reload()
+            }
+        })
 }
 //'''''''''''''''''''''''''''''''''''
 let getStudentByShift=()=>{
@@ -614,61 +838,114 @@ let getStudentByShift=()=>{
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-           console.log(data);
-           document.querySelector("#list").innerHTML=[]
-           document.getElementById("sum").innerText="Total student : "+data.length
-           data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,photoUrl},i)=> {
-              
-            let div=document.createElement("div")
-              let n=document.createElement("h3")
-              n.innerText="Name : "+name
-              let img = document.createElement("img");
-              img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-              img.alt = "User Photo";
-              let id=document.createElement("h4")
-              id.innerText="User Id : "+userId
-              let e=document.createElement("h4")
-              e.innerText="Email : "+email
-              let m=document.createElement("h4")
-              m.innerText="Mobile : "+mobile
-              let D=document.createElement("h4")
-              D.innerText="DOB : "+DOB
-              let a=document.createElement("h4")
-              a.innerText="Address : "+address
-              let pay=document.createElement("h4")
-              pay.innerText="Payment : "+payment
-              let w=document.createElement("h4")
-              w.innerText="WantedShift : "+wantedShift
-              let ps=document.createElement("h4")
-              ps.innerText="ProvidedShift : "+providedShift
-              let remove=document.createElement("button")
-                  remove.innerText="Remove"
-                  remove.style.color="red"
-                  remove.addEventListener("click",function(){
-                    removebtnfunc(userId,token)
-              })
-              let seat=document.createElement("button")
-              seat.innerText="SetSeat"
-              seat.style.color="green"
-              seat.addEventListener("click",function(){
-                  setSeat(userId,token)
-              })
-              let rseat=document.createElement("button")
-              rseat.innerText="RemoveSeat"
-              rseat.style.color="red"
-              rseat.addEventListener("click",function(){
-                  removeSeat(userId,token)
-              })
-              let seatM=document.createElement("button")
-                seatM.innerText="SetSeatManual"
-                seatM.style.color="green"
-                seatM.addEventListener("click",function(){
-                    setSeatManual(userId,token)
-                })
-          div.append(img,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-          document.querySelector("#list").append(div)
+                
+                document.querySelector("#list").innerHTML = "";
+
+                let table = document.createElement("table");
+                table.className = "student-table";
+
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thPayment = document.createElement("th");
+                thPayment.innerText = "Payment";
+                let thWantedShift = document.createElement("th");
+                thWantedShift.innerText = "Wanted Shift";
+                let thProvidedShift = document.createElement("th");
+                thProvidedShift.innerText = "Provided Shift";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ name, DOB, address, email, mobile, userId, photoUrl, payment, wantedShift, providedShift }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = userId;
+                    let tdPhoto = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+                    img.alt = "User Photo";
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+                    let tdPayment = document.createElement("td");
+                    tdPayment.innerText = payment;
+                    let tdWantedShift = document.createElement("td");
+                    tdWantedShift.innerText = wantedShift;
+                    let tdProvidedShift = document.createElement("td");
+                    tdProvidedShift.innerText = providedShift;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removebtnfunc(userId, token);
+                    });
+
+                    let seatBtn = document.createElement("button");
+                    seatBtn.innerText = "Set Seat";
+                    seatBtn.className = "action-btn seat-btn";
+                    seatBtn.addEventListener("click", function () {
+                        setSeat(userId, token);
+                    });
+
+                    let rseatBtn = document.createElement("button");
+                    rseatBtn.innerText = "Remove Seat";
+                    rseatBtn.className = "action-btn remove-seat-btn";
+                    rseatBtn.addEventListener("click", function () {
+                        removeSeat(userId, token);
+                    });
+
+                    let seatMBtn = document.createElement("button");
+                    seatMBtn.innerText = "Set Full Seat";
+                    seatMBtn.className = "action-btn set-seat-manual-btn";
+                    seatMBtn.addEventListener("click", function () {
+                        setSeatManual(userId, token);
+                    });
+
+                    tdActions.append(removeBtn, seatBtn, rseatBtn, seatMBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                document.querySelector("#list").appendChild(table);
+            });
           
-  })});
     }else if(response.status == 401){
         alert("Session expired .")
         window.location.href="adminLogin.html"
@@ -832,87 +1109,134 @@ let allSeats=()=>{
 //====================================================================
 
 let getStudentAreaWise=()=>{
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let user=document.getElementById("id").value
-    let url=`http://localhost:8080/admin/studentlist?address=${user}`
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let user = document.getElementById("id").value;
+    let url = `http://localhost:8080/admin/studentlist?address=${user}`;
+
     fetch(url, {
-        method: "GET", // Change the HTTP method as needed
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
         }
     })
     .then(response => {
-        if(response.status == 200){
+        if (response.status == 200) {
             response.json().then(data => {
-          //  console.log(data);
-            document.querySelector("#list").innerHTML=[]
-            data.forEach(({name,DOB,address,email,mobile,payment,wantedShift,providedShift,userId,photoUrl},i)=> {
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+name
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+userId
-                let e=document.createElement("h4")
-                e.innerText="Email : "+email
-                let img = document.createElement("img");
-                img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-                img.alt = "User Photo";
-                let m=document.createElement("h4")
-                m.innerText="Mobile : "+mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+address
-                let pay=document.createElement("h4")
-                pay.innerText="Payment : "+payment
-                let w=document.createElement("h4")
-                w.innerText="WantedShift : "+wantedShift
-                let ps=document.createElement("h4")
-                ps.innerText="ProvidedShift : "+providedShift
-                let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                removebtnfunc(userId,token)
-                })
-                let update=document.createElement("button")
-                    update.innerText="Update"
-                    update.style.color="green"
-                    update.addEventListener("click",function(){
-                        localStorage.setItem("UserId",JSON.stringify(userId))
-                        window.location.href="userUpdate.html"
-                })
-                let seat=document.createElement("button")
-                seat.innerText="SetSeat"
-                seat.style.color="green"
-                seat.addEventListener("click",function(){
-                    setSeat(userId,token)
-                })
-                let rseat=document.createElement("button")
-                rseat.innerText="RemoveSeat"
-                rseat.style.color="red"
-                rseat.addEventListener("click",function(){
-                    removeSeat(userId,token)
-                })
-                let seatM=document.createElement("button")
-                seatM.innerText="SetSeatManual"
-                seatM.style.color="green"
-                seatM.addEventListener("click",function(){
-                    setSeatManual(userId,token)
-                })
-            div.append(img,n,id,e,m,D,a,pay,w,ps,remove,seat,rseat,seatM)
-            document.querySelector("#list").append(div)
-            
-    })});
-        }else if(response.status == 401){
-            alert("Session expired .")
-            window.location.href="adminLogin.html"
-        }else{
+                document.querySelector("#list").innerHTML = "";
+
+                let table = document.createElement("table");
+                table.className = "student-table";
+
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thPayment = document.createElement("th");
+                thPayment.innerText = "Payment";
+                let thWantedShift = document.createElement("th");
+                thWantedShift.innerText = "Wanted Shift";
+                let thProvidedShift = document.createElement("th");
+                thProvidedShift.innerText = "Provided Shift";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thPayment, thWantedShift, thProvidedShift, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ name, DOB, address, email, mobile, userId, photoUrl, payment, wantedShift, providedShift }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = userId;
+                    let tdPhoto = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+                    img.alt = "User Photo";
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+                    let tdPayment = document.createElement("td");
+                    tdPayment.innerText = payment;
+                    let tdWantedShift = document.createElement("td");
+                    tdWantedShift.innerText = wantedShift;
+                    let tdProvidedShift = document.createElement("td");
+                    tdProvidedShift.innerText = providedShift;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removebtnfunc(userId, token);
+                    });
+
+                    let seatBtn = document.createElement("button");
+                    seatBtn.innerText = "Set Seat";
+                    seatBtn.className = "action-btn seat-btn";
+                    seatBtn.addEventListener("click", function () {
+                        setSeat(userId, token);
+                    });
+
+                    let rseatBtn = document.createElement("button");
+                    rseatBtn.innerText = "Remove Seat";
+                    rseatBtn.className = "action-btn remove-seat-btn";
+                    rseatBtn.addEventListener("click", function () {
+                        removeSeat(userId, token);
+                    });
+
+                    let seatMBtn = document.createElement("button");
+                    seatMBtn.innerText = "Set Full Seat";
+                    seatMBtn.className = "action-btn set-seat-manual-btn";
+                    seatMBtn.addEventListener("click", function () {
+                        setSeatManual(userId, token);
+                    });
+
+                    tdActions.append(removeBtn, seatBtn, rseatBtn, seatMBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdPayment, tdWantedShift, tdProvidedShift, tdActions);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                document.querySelector("#list").appendChild(table);
+            });
+        } else if (response.status == 401) {
+            alert("Session expired.");
+            window.location.href = "adminLogin.html";
+        } else {
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.reload();
         }
-    })
+    });
+
 }
 //---------------------------------------------------------------------
 let getAllStudentWithNoSeatNo=()=>{
@@ -982,7 +1306,7 @@ let getAllStudentWithNoSeatNo=()=>{
                     });
 
                     let seatM = document.createElement("button");
-                    seatM.innerText = "Set Seat Manual";
+                    seatM.innerText = "Set Full Seat";
                     seatM.className = "set-seat-manual-btn";
                     seatM.addEventListener("click", function() {
                         setSeatManual(userId, token);
@@ -1133,55 +1457,101 @@ let updatePayment=(token,id)=>{
 
 //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 let getAdminById=()=>{
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let user=document.getElementById("id").value
-   // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/admins/${user}`
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let user = document.getElementById("id").value;
+    let url = `http://localhost:8080/admin/admins/${user}`;
+
     fetch(url, {
-        method: "GET", // Change the HTTP method as needed
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
         }
     })
     .then(response => {
         if(response.status == 200){
             response.json().then(data => {
-          //  console.log(data);
-            document.querySelector("#list").innerHTML=[]
-            let el=data
-                let div=document.createElement("div")
-                let n=document.createElement("h3")
-                n.innerText="Name : "+el.name
-                let id=document.createElement("h4")
-                id.innerText="User Id : "+el.id
-                let e=document.createElement("h4")
-                e.innerText="Email : "+el.email
-                let img = document.createElement("img");
-                img.src = el.photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
-                img.alt = "User Photo";
-                let m=document.createElement("h4")
-                m.innerText="Mobile : "+el.mobile
-                let D=document.createElement("h4")
-                D.innerText="DOB : "+el.DOB
-                let a=document.createElement("h4")
-                a.innerText="Address : "+el.address
-                let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                removeAdmin(el.id,token)
-                })
-            div.append(img,n,id,e,m,D,a,remove)
-            document.querySelector("#list").append(div)
-});}else if(response.status == 401){
-    alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
+                document.querySelector("#list").innerHTML = "";
+                
+                let table = document.createElement("table");
+                table.className = "student-table";
+                
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+                
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+                
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thActions);
+                thead.append(trHead);
+                table.append(thead);
+                
+                let tbody = document.createElement("tbody");
+                
+                [data].forEach(({ name, DOB, address, email, mobile, id, photoUrl }, i) => {
+                    let tr = document.createElement("tr");
+                    
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = id;
+                    let tdPhoto = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
+                    img.alt = "User Photo";
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+        
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "remove-btn";
+                    removeBtn.addEventListener("click", function(){
+                        removeAdmin(id, token);
+                    });
+
+                    tdActions.append(removeBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdActions);
+                    tbody.append(tr);
+                });
+                
+                table.append(tbody);
+                document.querySelector("#list").append(table);
+            });
+        } else if(response.status == 401){
+            alert("Session expired.");
+            window.location.href = "adminLogin.html";
+        } else {
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.reload();
         }
-    })
+    });
+
 }
 
 let updateAdminFun=(id)=>{
@@ -1204,10 +1574,13 @@ let removeAdmin=(userId,token)=>{
    
 }).then(response => {
     if(response.status == 200){
-
-        alert("Student sucessfully deleted: ");
+        response.text().then(data => {
+            alert(data)
+            window.location.reload();
+        })
+        // alert("Admin sucessfully deleted: ");
        
-            location.reload();
+        //     location.reload();
             //getAdminById();
         }else if(response.status == 401){
             alert("Session expired .")
@@ -1280,55 +1653,102 @@ let updateAdmin=()=>{
 
 //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 let allAdmin=()=>{
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let p=document.getElementById("page").value
-    let s=document.getElementById("size").value
-    let url=`http://localhost:8080/admin/admin/${p}/${s}`
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let p = document.getElementById("page").value;
+    let s = document.getElementById("size").value;
+    let url = `http://localhost:8080/admin/admin/${p}/${s}`;
+
     fetch(url, {
-        method: "GET", 
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
         }
     })
     .then(response => {
-        if(response.status == 200){
+        if (response.status == 200) {
             response.json().then(data => {
-                document.querySelector("#list").innerHTML=[]
-                data.forEach(({name,DOB,address,email,mobile,id,photoUrl},i)=> {
-                    let div=document.createElement("div")
-                    let n=document.createElement("h3")
-                    n.innerText="Name : "+name
-                    let uid=document.createElement("h4")
-                    uid.innerText="User Id : "+id
-                    let e=document.createElement("h4")
-                    e.innerText="Email : "+email
+                document.querySelector("#list").innerHTML = "";
+
+                let table = document.createElement("table");
+                table.className = "student-table";
+
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "User ID";
+                let thPhoto = document.createElement("th");
+                thPhoto.innerText = "Photo";
+                let thEmail = document.createElement("th");
+                thEmail.innerText = "Email";
+                let thMobile = document.createElement("th");
+                thMobile.innerText = "Mobile";
+                let thDOB = document.createElement("th");
+                thDOB.innerText = "DOB";
+                let thAddress = document.createElement("th");
+                thAddress.innerText = "Address";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thPhoto, thEmail, thMobile, thDOB, thAddress, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ name, DOB, address, email, mobile, id, photoUrl }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = name;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = id;
+                    let tdPhoto = document.createElement("td");
                     let img = document.createElement("img");
                     img.src = photoUrl || defaultUrl; // Use a default photo URL if photoUrl is not available
                     img.alt = "User Photo";
-                    let m=document.createElement("h4")
-                    m.innerText="Mobile : "+mobile
-                    let D=document.createElement("h4")
-                    D.innerText="DOB : "+DOB
-                    let a=document.createElement("h4")
-                    a.innerText="Address : "+address
-                    let pay=document.createElement("h4")
-                    let remove=document.createElement("button")
-                        remove.innerText="Remove"
-                        remove.style.color="red"
-                        remove.addEventListener("click",function(){
-                    removeAdmin(id,token)
-                })
-            div.append(img,n,uid,e,m,D,a,remove)
-            document.querySelector("#list").append(div)
-})});}else if(response.status == 401){
-    alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
+                    img.className = "student-photo";
+                    tdPhoto.appendChild(img);
+                    let tdEmail = document.createElement("td");
+                    tdEmail.innerText = email;
+                    let tdMobile = document.createElement("td");
+                    tdMobile.innerText = mobile;
+                    let tdDOB = document.createElement("td");
+                    tdDOB.innerText = DOB;
+                    let tdAddress = document.createElement("td");
+                    tdAddress.innerText = address;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removeAdmin(id, token);
+                    });
+
+                    tdActions.appendChild(removeBtn);
+                    tr.append(tdIndex, tdName, tdId, tdPhoto, tdEmail, tdMobile, tdDOB, tdAddress, tdActions);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                document.querySelector("#list").appendChild(table);
+            });
+        } else if (response.status == 401) {
+            alert("Session expired.");
+            window.location.href = "adminLogin.html";
+        } else {
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.reload();
         }
-    })
+    });
+
 }
 
 /////////////////////////???????????????????????????????????????????????????????????
@@ -1532,76 +1952,109 @@ function submitUpdate() {
 }
 
 let showFloor=()=>{
-    let lid=JSON.parse(localStorage.getItem("labId"))
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let url=`http://localhost:8080/admin/floors/${lid}`
-    fetch(url, {
-        method: "GET", // Change the HTTP method as needed
-        headers: {
-            "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
-        }
-    })
-    .then(response => {
-        if(response.status == 200){
-            response.json().then(data => {
-                //console.log(data);
-                document.querySelector("#list").innerHTML=[]
-                document.querySelector("#size").innerText="Total : "+data.length
-                data.forEach(({name,floorNo,shiftList},i)=> {
-                    let div=document.createElement("div")
-                    let n=document.createElement("h3")
-                    n.innerText="Name : "+name
-                    let uid=document.createElement("h4")
-                    uid.innerText="Floor Id : "+floorNo
+    let lid = JSON.parse(localStorage.getItem("labId"));
+let token = JSON.parse(localStorage.getItem("jwtToken"));
+let url = `http://localhost:8080/admin/floors/${lid}`;
 
-                    let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                        removeFloor(floorNo,token)
-                    })
+fetch(url, {
+    method: "GET",
+    headers: {
+        "Authorization": `Bearer ${token}`
+    }
+})
+.then(response => {
+    if (response.status == 200) {
 
-                    let update=document.createElement("button")
-                    update.innerText="EditName"
-                    update.style.color="green"
-                    update.addEventListener("click",function(){
-                        editName(floorNo,token)
-                    })
+        response.json().then(data => {
+            document.querySelector("#size").innerText = `Total Floors : ${data.length}`;
+            document.querySelector("#list").innerHTML = "";
 
-                    let addsft=document.createElement("button")
-                    addsft.innerText="AddShift"
-                    addsft.style.color="green"
-                    addsft.addEventListener("click",function(){
-                        openAddShiftModal(floorNo,token);
-                    
-                    })
-                    
-                    let showF=document.createElement("button")
-                    showF.innerText="ShowShift"
-                    showF.style.color="green"
-                    showF.addEventListener("click",function(){
-                        localStorage.setItem("floorNo",JSON.stringify(floorNo))
-                        window.location.href="showShifts.html"
-                    
-                    })
-                    let showStu=document.createElement("button")
-                    showStu.innerText="ShowStudent"
-                    showStu.style.color="green"
-                    showStu.addEventListener("click",function(){
-                        localStorage.setItem("floorNo",JSON.stringify(floorNo))
-                        window.location.href="showFloorStudent.html"
-                    })
-            div.append(n,uid,update,remove,addsft,showF,showStu)
-            document.querySelector("#list").append(div)
-})});}else if(response.status == 401){
-    alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
-            response.json().then(data => alert(data.message));
-            window.location.reload()
-        }
-    })
+            let table = document.createElement("table");
+            table.className = "floor-table";
+
+            let thead = document.createElement("thead");
+            let trHead = document.createElement("tr");
+
+            let thIndex = document.createElement("th");
+            thIndex.innerText = "S.No";
+            let thName = document.createElement("th");
+            thName.innerText = "Name";
+            let thId = document.createElement("th");
+            thId.innerText = "Floor ID";
+            let thActions = document.createElement("th");
+            thActions.innerText = "Actions";
+
+            trHead.append(thIndex, thName, thId, thActions);
+            thead.append(trHead);
+            table.append(thead);
+
+            let tbody = document.createElement("tbody");
+
+            data.forEach(({ name, floorNo }, i) => {
+                let tr = document.createElement("tr");
+
+                let tdIndex = document.createElement("td");
+                tdIndex.innerText = i + 1;
+                let tdName = document.createElement("td");
+                tdName.innerText = name;
+                let tdId = document.createElement("td");
+                tdId.innerText = floorNo;
+
+                let tdActions = document.createElement("td");
+                let removeBtn = document.createElement("button");
+                removeBtn.innerText = "Remove";
+                removeBtn.className = "action-btn remove-btn";
+                removeBtn.addEventListener("click", function () {
+                    removeFloor(floorNo, token);
+                });
+
+                let updateBtn = document.createElement("button");
+                updateBtn.innerText = "Edit Name";
+                updateBtn.className = "action-btn update-btn";
+                updateBtn.addEventListener("click", function () {
+                    editName(floorNo, token);
+                });
+
+                let addShiftBtn = document.createElement("button");
+                addShiftBtn.innerText = "Add Shift";
+                addShiftBtn.className = "action-btn add-shift-btn";
+                addShiftBtn.addEventListener("click", function () {
+                    openAddShiftModal(floorNo, token);
+                });
+
+                let showShiftBtn = document.createElement("button");
+                showShiftBtn.innerText = "Show Shifts";
+                showShiftBtn.className = "action-btn show-shifts-btn";
+                showShiftBtn.addEventListener("click", function () {
+                    localStorage.setItem("floorNo", JSON.stringify(floorNo));
+                    window.location.href = "showShifts.html";
+                });
+
+                let showStudentBtn = document.createElement("button");
+                showStudentBtn.innerText = "Show Students";
+                showStudentBtn.className = "action-btn show-students-btn";
+                showStudentBtn.addEventListener("click", function () {
+                    localStorage.setItem("floorNo", JSON.stringify(floorNo));
+                    window.location.href = "showFloorStudent.html";
+                });
+
+                tdActions.append(removeBtn, updateBtn, addShiftBtn, showShiftBtn, showStudentBtn);
+                tr.append(tdIndex, tdName, tdId, tdActions);
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+            document.querySelector("#list").appendChild(table);
+        });
+    } else if (response.status == 401) {
+        alert("Session expired.");
+        window.location.href = "adminLogin.html";
+    } else {
+        response.json().then(data => alert(data.message));
+        window.location.reload();
+    }
+});
+
 }
 
 let openAddShiftModal=(floorNo,token)=> {
@@ -1716,7 +2169,7 @@ let showFloorStudent=()=>{
                     });
 
                     let setSeatManualBtn = document.createElement("button");
-                    setSeatManualBtn.innerText = "Set Seat Manual";
+                    setSeatManualBtn.innerText = "Set Full Seat";
                     setSeatManualBtn.className = "set-seat-manual-btn";
                     setSeatManualBtn.addEventListener("click", function(){
                         setSeatManual(userId, token);
@@ -1864,75 +2317,116 @@ let addShift=()=>{
 }
 //...................................>>>>>>>>>>>>>>>>>>>
 let showShifts=()=>{
-    let floorNo=JSON.parse(localStorage.getItem("floorNo"))
-    let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let url=`http://localhost:8080/admin/shifts/${floorNo}`
+    let floorNo = JSON.parse(localStorage.getItem("floorNo"));
+    let token = JSON.parse(localStorage.getItem("jwtToken"));
+    let url = `http://localhost:8080/admin/shifts/${floorNo}`;
+
     fetch(url, {
-        method: "GET", // Change the HTTP method as needed
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
-          //  "Content-Type": "application/json",
         }
     })
     .then(response => {
-        if(response.status == 200){
+        if (response.status == 200) {
             response.json().then(data => {
-                //console.log(data);
-                document.querySelector("#list").innerHTML=[]
-                document.querySelector("#size").innerText+=data.length
-                data.forEach(({shiftName,startTime,endTime,shiftId,seatList},i)=> {
-                    let div=document.createElement("div")
-                    let n=document.createElement("h3")
-                    n.innerText="Name : "+shiftName
-                    let uid=document.createElement("h4")
-                    uid.innerText="Shift Id : "+shiftId
-                    let st=document.createElement("h4")
-                    st.innerText="Start : "+startTime
-                    let et=document.createElement("h4")
-                    et.innerText="Close : "+endTime
-                    let remove=document.createElement("button")
-                    remove.innerText="Remove"
-                    remove.style.color="red"
-                    remove.addEventListener("click",function(){
-                        removeShift(shiftId,token)
-                    })
-                    let update=document.createElement("button")
-                    update.innerText="Update"
-                    update.style.color="green"
-                    update.addEventListener("click",function(){
-                        openShiftUpdateModal(shiftId,token,shiftName,startTime,endTime);
-                    })
-                    let addSt=document.createElement("button")
-                    addSt.innerText="AddSeat"
-                    addSt.style.color="green"
-                    addSt.addEventListener("click",function(){
-                        addSeat(shiftId,token)
-                    
-                    })
-                    let showSt=document.createElement("button")
-                    showSt.innerText="ShowSeat"
-                    showSt.style.color="green"
-                    showSt.addEventListener("click",function(){
-                    localStorage.setItem("ShiftNo",JSON.stringify(shiftId))
-                    window.location.href="showSeats.html"
-                    })
-                    let showStu=document.createElement("button")
-                    showStu.innerText="ShowStudent"
-                    showStu.style.color="green"
-                    showStu.addEventListener("click",function(){
-                    localStorage.setItem("ShiftNo",JSON.stringify(shiftId))
-                    window.location.href="showStudent.html"
-                    })
-            div.append(n,uid,st,et,update,remove,addSt,showSt,showStu)
-            document.querySelector("#list").append(div)
-})});}else if(response.status == 401){
-    alert("Session expired .")
-    window.location.href="adminLogin.html"
-        }else{
+                document.querySelector("#list").innerHTML = "";
+                document.querySelector("#size").innerText = `Total Shifts : ${data.length}`;
+
+                let table = document.createElement("table");
+                table.className = "shift-table";
+
+                let thead = document.createElement("thead");
+                let trHead = document.createElement("tr");
+
+                let thIndex = document.createElement("th");
+                thIndex.innerText = "S.No";
+                let thName = document.createElement("th");
+                thName.innerText = "Name";
+                let thId = document.createElement("th");
+                thId.innerText = "Shift ID";
+                let thStart = document.createElement("th");
+                thStart.innerText = "Start Time";
+                let thEnd = document.createElement("th");
+                thEnd.innerText = "End Time";
+                let thActions = document.createElement("th");
+                thActions.innerText = "Actions";
+
+                trHead.append(thIndex, thName, thId, thStart, thEnd, thActions);
+                thead.append(trHead);
+                table.append(thead);
+
+                let tbody = document.createElement("tbody");
+
+                data.forEach(({ shiftName, startTime, endTime, shiftId }, i) => {
+                    let tr = document.createElement("tr");
+
+                    let tdIndex = document.createElement("td");
+                    tdIndex.innerText = i + 1;
+                    let tdName = document.createElement("td");
+                    tdName.innerText = shiftName;
+                    let tdId = document.createElement("td");
+                    tdId.innerText = shiftId;
+                    let tdStart = document.createElement("td");
+                    tdStart.innerText = startTime;
+                    let tdEnd = document.createElement("td");
+                    tdEnd.innerText = endTime;
+
+                    let tdActions = document.createElement("td");
+                    let removeBtn = document.createElement("button");
+                    removeBtn.innerText = "Remove";
+                    removeBtn.className = "action-btn remove-btn";
+                    removeBtn.addEventListener("click", function () {
+                        removeShift(shiftId, token);
+                    });
+
+                    let updateBtn = document.createElement("button");
+                    updateBtn.innerText = "Update";
+                    updateBtn.className = "action-btn update-btn";
+                    updateBtn.addEventListener("click", function () {
+                        openShiftUpdateModal(shiftId, token, shiftName, startTime, endTime);
+                    });
+
+                    let addSeatBtn = document.createElement("button");
+                    addSeatBtn.innerText = "Add Seat";
+                    addSeatBtn.className = "action-btn add-seat-btn";
+                    addSeatBtn.addEventListener("click", function () {
+                        addSeat(shiftId, token);
+                    });
+
+                    let showSeatBtn = document.createElement("button");
+                    showSeatBtn.innerText = "Show Seats";
+                    showSeatBtn.className = "action-btn show-seats-btn";
+                    showSeatBtn.addEventListener("click", function () {
+                        localStorage.setItem("ShiftNo", JSON.stringify(shiftId));
+                        window.location.href = "showSeats.html";
+                    });
+
+                    let showStudentBtn = document.createElement("button");
+                    showStudentBtn.innerText = "Show Students";
+                    showStudentBtn.className = "action-btn show-students-btn";
+                    showStudentBtn.addEventListener("click", function () {
+                        localStorage.setItem("ShiftNo", JSON.stringify(shiftId));
+                        window.location.href = "showStudent.html";
+                    });
+
+                    tdActions.append(removeBtn, updateBtn, addSeatBtn, showSeatBtn, showStudentBtn);
+                    tr.append(tdIndex, tdName, tdId, tdStart, tdEnd, tdActions);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                document.querySelector("#list").appendChild(table);
+            });
+        } else if (response.status == 401) {
+            alert("Session expired.");
+            window.location.href = "adminLogin.html";
+        } else {
             response.json().then(data => alert(data.message));
-            window.location.reload()
+            window.location.reload();
         }
-    })
+    });
+
 }
 
 let openShiftUpdateModal=(shiftId,token,shiftName,startTime,endTime)=> {
@@ -2054,7 +2548,7 @@ let showStudent=()=>{
                     });
 
                     let setSeatManualBtn = document.createElement("button");
-                    setSeatManualBtn.innerText = "Set Seat Manual";
+                    setSeatManualBtn.innerText = "Set Full Seat";
                     setSeatManualBtn.className = "set-seat-manual-btn";
                     setSeatManualBtn.addEventListener("click", function(){
                         setSeatManual(userId, token);
@@ -2312,7 +2806,7 @@ let studentDetails=(student,token)=>{
         removeSeat(el.userId,token)
     })
     let seatM=document.createElement("button")
-        seatM.innerText="SetSeatManual"
+        seatM.innerText="Set Full Seat"
         seatM.style.color="green"
         seatM.addEventListener("click",function(){
         setSeatManual(el.userId,token)
