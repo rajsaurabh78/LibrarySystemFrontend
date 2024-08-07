@@ -1,3 +1,5 @@
+const baseUrlPath="http://localhost:8080";
+
 let stuFun=()=>{
     // let payment=false;
     // let pay = document.getElementById("payment");
@@ -24,7 +26,7 @@ let stuFun=()=>{
     let pass=document.getElementById("password").value
     let mobile=document.getElementById("mobile").value
 
-    fetch("http://localhost:8080/register/addStudent", {
+    fetch(`${baseUrlPath}/register/addStudent`, {
 
         method: "POST",
         headers: {
@@ -67,7 +69,7 @@ let admFun=()=>{
     let mobile=document.getElementById("mobile").value
 
    // console.log(dob)
-    fetch("http://localhost:8080/admin/admin", {
+    fetch(`${baseUrlPath}/admin/admin`, {
 
         method: "POST",
         headers: {

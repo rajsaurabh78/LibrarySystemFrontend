@@ -3,9 +3,11 @@ let currentShiftId;
 let currentToken;
 let currentAdminId;
 let currentUserId;
-let defaultUrl="data:image/png;base64,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"
+const defaultUrl="data:image/png;base64,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"
+const baseUrlPath="http://localhost:8080";
+
 let aLogin=()=>{
-    let url = "http://localhost:8080/logIn";
+    let url = `${baseUrlPath}/logIn`;
     let username =document.getElementById("mobile").value;
     let password =document.getElementById("password").value;
     let credentials = `${username}:${password}`;
@@ -39,7 +41,7 @@ let getAllStudentInSortingOrder=()=>{
     let d=document.getElementById("dir").value
 //    console.log(d);
    // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/students?field=${f}&direction=${d} `
+    let url=`${baseUrlPath}/admin/students?field=${f}&direction=${d} `
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -132,7 +134,7 @@ let removebtnfunc=(userId,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/studentdel/"+userId, {
+    fetch(`${baseUrlPath}/admin/studentdel/${userId}`, {
 
     method: "DELETE",
     headers: {
@@ -164,7 +166,7 @@ let removeSeat=(userId,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/upseat/"+userId, {
+    fetch(`${baseUrlPath}/admin/upseat/${userId}`, {
 
     method: "PUT",
     headers: {
@@ -196,7 +198,7 @@ let setSeat=(userId,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/studentseat/"+userId, {
+    fetch(`${baseUrlPath}/admin/studentseat/${userId}`, {
 
     method: "GET",
     headers: {
@@ -254,7 +256,7 @@ let updateUser=()=>{
     let id=JSON.parse(localStorage.getItem("UserId"))
  
    // console.log(dob)
-    fetch("http://localhost:8080/students/student", {
+    fetch(`${baseUrlPath}/students/student`, {
 
         method: "PATCH",
         headers: {
@@ -298,7 +300,7 @@ let getAllSortedStudentWithPagination=()=>{
     let f = document.getElementById("field").value;
     let d = document.getElementById("dirn").value;
 
-    let url = `http://localhost:8080/admin/stu/${p}/${s}?field=${f}&direction=${d}`;
+    let url = `${baseUrlPath}/admin/stu/${p}/${s}?field=${f}&direction=${d}`;
 
     fetch(url, {
         method: "GET",
@@ -430,7 +432,7 @@ let getAllSortedStudentWithPagination=()=>{
 let getStudentById=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
 let user = document.getElementById("id").value;
-let url = `http://localhost:8080/admin/students/${user}`;
+let url = `${baseUrlPath}/admin/students/${user}`;
 
 fetch(url, {
     method: "GET",
@@ -562,7 +564,7 @@ fetch(url, {
 let getStudentBySeat=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let user=document.getElementById("id").value
-    let url=`http://localhost:8080/admin/getstudent/${user}`
+    let url=`${baseUrlPath}/admin/getstudent/${user}`
     fetch(url, {
         method: "GET", 
         headers: {
@@ -694,7 +696,7 @@ let getStudentByFloor=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let user=document.getElementById("id").value
    // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/studentfl/${user}`
+    let url=`${baseUrlPath}/admin/studentfl/${user}`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -826,7 +828,7 @@ let getStudentByShift=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let user=document.getElementById("id").value
    // const studentTableBody = document.getElementById('student-table-body');
-    let url=`http://localhost:8080/admin/studentshift/${user}`
+    let url=`${baseUrlPath}/admin/studentshift/${user}`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -957,7 +959,7 @@ let getStudentByShift=()=>{
 //////////////////////////////////////////////////////////////////////////
 let allAvalibleSeats=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-let url = `http://localhost:8080/admin/seats`;
+let url = `${baseUrlPath}/admin/seats`;
 
 fetch(url, {
     method: "GET",
@@ -1038,7 +1040,7 @@ fetch(url, {
 }
 let allSeats=()=>{
     let token = JSON.parse(localStorage.getItem("UserToken"));
-    let url = `http://localhost:8080/admin/seats`;
+    let url = `${baseUrlPath}/admin/seats`;
 
     fetch(url, {
         method: "GET",
@@ -1110,7 +1112,7 @@ let allSeats=()=>{
 let getStudentAreaWise=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
     let user = document.getElementById("id").value;
-    let url = `http://localhost:8080/admin/studentlist?address=${user}`;
+    let url = `${baseUrlPath}/admin/studentlist?address=${user}`;
 
     fetch(url, {
         method: "GET",
@@ -1240,7 +1242,7 @@ let getStudentAreaWise=()=>{
 //---------------------------------------------------------------------
 let getAllStudentWithNoSeatNo=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-    let url = `http://localhost:8080/admin/studentno`;
+    let url = `${baseUrlPath}/admin/studentno`;
     fetch(url, {
         method: "GET",
         headers: {
@@ -1331,7 +1333,7 @@ let setSeatManual=(userId,token)=>{
     let choice= confirm("Are You Sure ?");
     // let shift=prompt("Enter shift name");
     if(choice){
-        fetch(`http://localhost:8080/admin/studentseats/${userId}`, {
+        fetch(`${baseUrlPath}/admin/studentseats/${userId}`, {
 
         method: "GET",
         headers: {
@@ -1360,7 +1362,7 @@ let setSeatManual=(userId,token)=>{
 //''''''''''''''''''''''''''''''''''
 let allStudentWithNoPay=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-        let url = `http://localhost:8080/admin/studentnopay`;
+        let url = `${baseUrlPath}/admin/studentnopay`;
         fetch(url, {
             method: "GET", // Change the HTTP method as needed
             headers: {
@@ -1425,7 +1427,7 @@ let allStudentWithNoPay=()=>{
 let updatePayment=(token,id)=>{
     let choice= confirm("Are You Sure ?");
     if(choice){
-        fetch(`http://localhost:8080/admin/uppay/${id}`, {
+        fetch(`${baseUrlPath}/admin/uppay/${id}`, {
 
             method: "PUT",
             headers: {
@@ -1458,7 +1460,7 @@ let updatePayment=(token,id)=>{
 let getAdminById=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
     let user = document.getElementById("id").value;
-    let url = `http://localhost:8080/admin/admins/${user}`;
+    let url = `${baseUrlPath}/admin/admins/${user}`;
 
     fetch(url, {
         method: "GET",
@@ -1563,7 +1565,7 @@ let removeAdmin=(userId,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/deladmin/"+userId, {
+    fetch(`${baseUrlPath}/admin/deladmin/${userId}`, {
 
     method: "DELETE",
     headers: {
@@ -1616,7 +1618,7 @@ let updateAdmin=()=>{
     let mobile=document.getElementById('updateMob').value ;
     let address=document.getElementById('updateAddress').value ;
    // console.log(dob)
-    fetch("http://localhost:8080/admin/upadmin", {
+    fetch(`${baseUrlPath}/admin/upadmin`, {
 
         method: "PATCH",
         headers: {
@@ -1655,7 +1657,7 @@ let allAdmin=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
     let p = document.getElementById("page").value;
     let s = document.getElementById("size").value;
-    let url = `http://localhost:8080/admin/admin/${p}/${s}`;
+    let url = `${baseUrlPath}/admin/admin/${p}/${s}`;
 
     fetch(url, {
         method: "GET",
@@ -1757,7 +1759,7 @@ let addFloor=()=>{
     let name=document.getElementById("Fname").value
    console.log(lid);
    // console.log(dob)
-    fetch(`http://localhost:8080/admin/addfloor/${lid}`, {
+    fetch(`${baseUrlPath}/admin/addfloor/${lid}`, {
 
         method: "POST",
         headers: {
@@ -1788,7 +1790,7 @@ let addLibrary=()=>{
     let floor=document.getElementById("floor").value
     let address=document.getElementById("address").value
    // console.log(dob)
-    fetch("http://localhost:8080/admin/addlibrary", {
+    fetch(`${baseUrlPath}/admin/addlibrary`, {
 
         method: "POST",
         headers: {
@@ -1822,7 +1824,7 @@ let addLibrary=()=>{
 }
 let AllLibrary=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-    let url = `http://localhost:8080/admin/librarys`;
+    let url = `${baseUrlPath}/admin/librarys`;
 
     fetch(url, {
         method: "GET",
@@ -1931,7 +1933,7 @@ function submitUpdate() {
     let name = document.getElementById('updateName').value;
     let address = document.getElementById('updateAddress').value;
 
-    fetch(`http://localhost:8080/admin/library/${currentLabId}`, {
+    fetch(`${baseUrlPath}/admin/library/${currentLabId}`, {
         method: 'PATCH',
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -1953,7 +1955,7 @@ function submitUpdate() {
 let showFloor=()=>{
     let lid = JSON.parse(localStorage.getItem("labId"));
 let token = JSON.parse(localStorage.getItem("jwtToken"));
-let url = `http://localhost:8080/admin/floors/${lid}`;
+let url = `${baseUrlPath}/admin/floors/${lid}`;
 
 fetch(url, {
     method: "GET",
@@ -2064,7 +2066,7 @@ let openAddShiftModal=(floorNo,token)=> {
 let showFloorStudent=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
     let floor = JSON.parse(localStorage.getItem("floorNo"));
-    let url = `http://localhost:8080/admin/studentfl/${floor}`;
+    let url = `${baseUrlPath}/admin/studentfl/${floor}`;
 
     fetch(url, {
         method: "GET",
@@ -2197,7 +2199,7 @@ let removeLibrary=(id,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/delLibrary/"+id, {
+    fetch(`${baseUrlPath}/admin/delLibrary/${id}`, {
 
     method: "DELETE",
     headers: {
@@ -2224,7 +2226,7 @@ let removeFloor=(id,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/delfloor/"+id, {
+    fetch(`${baseUrlPath}/admin/delfloor/${id}`, {
 
     method: "DELETE",
     headers: {
@@ -2251,7 +2253,7 @@ let removeFloor=(id,token)=>{
 let editName=(fl,token)=>{
     let userInput = prompt("Please enter Change name -:");
     if (userInput != "" && userInput != null) {
-        fetch(`http://localhost:8080/admin/upfloor/${fl}?name=${userInput}`, {
+        fetch(`${baseUrlPath}/admin/upfloor/${fl}?name=${userInput}`, {
 
         method: "PUT",
         headers: {
@@ -2284,8 +2286,8 @@ let addShift=()=>{
     let startTime=document.getElementById("startTime").value
     let seats=document.getElementById("NoOfSeats").value
 
-   console.log(fn)
-    fetch(`http://localhost:8080/admin/addshift/${fn}`, {
+//    console.log(fn)
+    fetch(`${baseUrlPath}/admin/addshift/${fn}`, {
 
         method: "POST",
         headers: {
@@ -2318,7 +2320,7 @@ let addShift=()=>{
 let showShifts=()=>{
     let floorNo = JSON.parse(localStorage.getItem("floorNo"));
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-    let url = `http://localhost:8080/admin/shifts/${floorNo}`;
+    let url = `${baseUrlPath}/admin/shifts/${floorNo}`;
 
     fetch(url, {
         method: "GET",
@@ -2441,7 +2443,7 @@ let openShiftUpdateModal=(shiftId,token,shiftName,startTime,endTime)=> {
 let showStudent=()=>{
     let token=JSON.parse(localStorage.getItem("jwtToken"))
     let shift=JSON.parse(localStorage.getItem("ShiftNo"))
-    let url=`http://localhost:8080/admin/student/shift/${shift}`
+    let url=`${baseUrlPath}/admin/student/shift/${shift}`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -2575,7 +2577,7 @@ let removeShift=(id,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/delshift/"+id, {
+    fetch(`${baseUrlPath}/admin/delshift/${id}`, {
 
     method: "DELETE",
     headers: {
@@ -2595,7 +2597,7 @@ let removeShift=(id,token)=>{
             window.location.href="adminLogin.html"
     }else{
         response.json().then(data => alert(data.message));
-        window.location.reload()
+        // window.location.reload()
     }
 })
     }
@@ -2603,7 +2605,7 @@ let removeShift=(id,token)=>{
 let addSeat=(shiftId,token)=>{
     let userInput = prompt("Please enter no of seats.");
     if (userInput != "" && userInput != null) {
-        fetch(`http://localhost:8080/admin/seats/${shiftId}?noOfSeats=${userInput}`, {
+        fetch(`${baseUrlPath}/admin/seats/${shiftId}?noOfSeats=${userInput}`, {
 
             method: "POST",
             headers: {
@@ -2639,7 +2641,7 @@ let updateShift=()=>{
     let st=document.getElementById('startTime').value;
     let et=document.getElementById('endTime').value;
 
-    fetch(`http://localhost:8080/admin/upshift`, {
+    fetch(`${baseUrlPath}/admin/upshift`, {
 
         method: "PATCH",
         headers: {
@@ -2671,7 +2673,7 @@ let updateShift=()=>{
 let showSeats=()=>{
     let ShiftNo=JSON.parse(localStorage.getItem("ShiftNo"))
     let token=JSON.parse(localStorage.getItem("jwtToken"))
-    let url=`http://localhost:8080/admin/seats/${ShiftNo}`
+    let url=`${baseUrlPath}/admin/seats/${ShiftNo}`
     fetch(url, {
         method: "GET", // Change the HTTP method as needed
         headers: {
@@ -2776,7 +2778,7 @@ let deleteSeat=(seatNo,token)=>{
     let choice= confirm("Are You Sure ?");
 
     if(choice){
-    fetch("http://localhost:8080/admin/seats/"+seatNo, {
+    fetch(`${baseUrlPath}/admin/seats/${seatNo}`, {
 
     method: "DELETE",
     headers: {
@@ -2803,7 +2805,7 @@ let deleteSeat=(seatNo,token)=>{
 }
 
 let studentDetails=(data,token)=>{
-    console.log(data);
+    // console.log(data);
     document.getElementById("size").innerText = `Total Student: 1`;
     document.querySelector("#back").href="showSeats.html"
 
@@ -2911,7 +2913,7 @@ let studentDetails=(data,token)=>{
 
 let getAdminProfile=()=>{
     let token = JSON.parse(localStorage.getItem("jwtToken"));
-    let url = "http://localhost:8080/admin/profile";
+    let url = `${baseUrlPath}/admin/profile`;
 
     fetch(url, {
         method: "GET",
@@ -2977,7 +2979,7 @@ let openUpdateAdminProfileModal=(name, email, mob,Dob,address)=> {
 }
 let getStudentProfile=()=>{
     let token = JSON.parse(localStorage.getItem("UserToken"));
-    let url = "http://localhost:8080/students/profile";
+    let url = `${baseUrlPath}/students/profile`;
 
     fetch(url, {
         method: "GET",
@@ -3064,7 +3066,7 @@ let updateOwnProfile=()=>{
     let shift=document.getElementById('updateShift').value;
 
    // console.log(dob)
-    fetch("http://localhost:8080/students/student", {
+    fetch(`${baseUrlPath}/students/student`, {
 
         method: "PATCH",
         headers: {
@@ -3112,7 +3114,7 @@ let forgetPassword=(user)=>{
         alert("Fill all three details.")
     }
 
-    fetch(`http://localhost:8080/register/${user}/password`, {
+    fetch(`${baseUrlPath}/register/${user}/password`, {
 
         method: "PATCH",
         headers: {
@@ -3140,7 +3142,7 @@ let forgetPassword=(user)=>{
     })
 }
 let sLogin=()=>{
-    let url = "http://localhost:8080/signIn";
+    let url = `${baseUrlPath}/signIn`;
     let username =document.getElementById("email").value;
     let password =document.getElementById("password").value;
     let credentials = `${username}:${password}`;

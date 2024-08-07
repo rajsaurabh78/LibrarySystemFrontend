@@ -1,130 +1,131 @@
+const baseUrlPath="http://localhost:8080";
 
 let allDetails=()=>{
     let token = JSON.parse(localStorage.getItem("UserToken"));
-let url = `http://localhost:8080/students/allDetails`;
+    let url = `${baseUrlPath}/students/allDetails`;
 
-fetch(url, {
-    method: "GET",
-    headers: {
-        "Authorization": `Bearer ${token}`
-    }
-})
-.then(response => {
-    if (response.status == 200) {
-        response.json().then(data => {
-            let tbody = document.querySelector("#libraryTable tbody");
-            tbody.innerHTML = ""; // Clear existing rows
-            document.querySelector("#size").innerText = `Total Libraries: ${data.length}`;
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.status == 200) {
+            response.json().then(data => {
+                let tbody = document.querySelector("#libraryTable tbody");
+                tbody.innerHTML = ""; // Clear existing rows
+                document.querySelector("#size").innerText = `Total Libraries: ${data.length}`;
 
-            data.forEach(({ name, address, labId, floorList }, i) => {
-                let row = document.createElement("tr");
+                data.forEach(({ name, address, labId, floorList }, i) => {
+                    let row = document.createElement("tr");
 
-                let serialNoCell = document.createElement("td");
-                serialNoCell.innerText = i + 1;
+                    let serialNoCell = document.createElement("td");
+                    serialNoCell.innerText = i + 1;
 
-                let nameCell = document.createElement("td");
-                nameCell.innerText = name;
+                    let nameCell = document.createElement("td");
+                    nameCell.innerText = name;
 
-                let labIdCell = document.createElement("td");
-                labIdCell.innerText = labId;
+                    let labIdCell = document.createElement("td");
+                    labIdCell.innerText = labId;
 
-                let addressCell = document.createElement("td");
-                addressCell.innerText = address;
+                    let addressCell = document.createElement("td");
+                    addressCell.innerText = address;
 
-                let actionsCell = document.createElement("td");
+                    let actionsCell = document.createElement("td");
 
-                let showFl = document.createElement("button");
-                showFl.innerText = "Show Floor";
-                showFl.className = "show-floor-btn";
-                showFl.addEventListener("click", function() {
-                    let floorListRow = row.nextSibling;
-                    if (floorListRow && floorListRow.className === "floor-list-row") {
-                        floorListRow.remove();
-                    } else {
-                        let floorRow = document.createElement("tr");
-                        floorRow.className = "floor-list-row";
-                        let floorCell = document.createElement("td");
-                        floorCell.colSpan = 5;
+                    let showFl = document.createElement("button");
+                    showFl.innerText = "Show Floor";
+                    showFl.className = "show-floor-btn";
+                    showFl.addEventListener("click", function() {
+                        let floorListRow = row.nextSibling;
+                        if (floorListRow && floorListRow.className === "floor-list-row") {
+                            floorListRow.remove();
+                        } else {
+                            let floorRow = document.createElement("tr");
+                            floorRow.className = "floor-list-row";
+                            let floorCell = document.createElement("td");
+                            floorCell.colSpan = 5;
 
-                        let floorTable = document.createElement("table");
-                        floorTable.border = "1";
-                        floorTable.style.margin = "10px 0";
-                        floorTable.style.width = "100%";
+                            let floorTable = document.createElement("table");
+                            floorTable.border = "1";
+                            floorTable.style.margin = "10px 0";
+                            floorTable.style.width = "100%";
 
-                        let floorThead = document.createElement("thead");
-                        let floorHeaderRow = document.createElement("tr");
+                            let floorThead = document.createElement("thead");
+                            let floorHeaderRow = document.createElement("tr");
 
-                        let floorTh0 = document.createElement("th");
-                        floorTh0.innerText = "S.No";
-                        let floorTh1 = document.createElement("th");
-                        floorTh1.innerText = "Floor No";
-                        let floorTh2 = document.createElement("th");
-                        floorTh2.innerText = "Floor Name";
-                        let floorTh3 = document.createElement("th");
-                        floorTh3.innerText = "Actions";
-                        
-                        let closeTh = document.createElement("th");
-                        let closeBtn = document.createElement("button");
-                        closeBtn.innerHTML = "&times;";
-                        closeBtn.className = "close-btn";
-                        closeBtn.addEventListener("click", function() {
-                            floorRow.remove();
-                        });
-                        closeTh.appendChild(closeBtn);
+                            let floorTh0 = document.createElement("th");
+                            floorTh0.innerText = "S.No";
+                            let floorTh1 = document.createElement("th");
+                            floorTh1.innerText = "Floor No";
+                            let floorTh2 = document.createElement("th");
+                            floorTh2.innerText = "Floor Name";
+                            let floorTh3 = document.createElement("th");
+                            floorTh3.innerText = "Actions";
+                            
+                            let closeTh = document.createElement("th");
+                            let closeBtn = document.createElement("button");
+                            closeBtn.innerHTML = "&times;";
+                            closeBtn.className = "close-btn";
+                            closeBtn.addEventListener("click", function() {
+                                floorRow.remove();
+                            });
+                            closeTh.appendChild(closeBtn);
 
-                        floorHeaderRow.append(floorTh0, floorTh1, floorTh2, floorTh3, closeTh);
-                        floorThead.append(floorHeaderRow);
-                        floorTable.append(floorThead);
+                            floorHeaderRow.append(floorTh0, floorTh1, floorTh2, floorTh3, closeTh);
+                            floorThead.append(floorHeaderRow);
+                            floorTable.append(floorThead);
 
-                        let floorTbody = document.createElement("tbody");
+                            let floorTbody = document.createElement("tbody");
 
-                        floorList.forEach(({ name, floorNo, shiftList }, j) => {
-                            let floorDataRow = document.createElement("tr");
+                            floorList.forEach(({ name, floorNo, shiftList }, j) => {
+                                let floorDataRow = document.createElement("tr");
 
-                            let floorSerialNoCell = document.createElement("td");
-                            floorSerialNoCell.innerText = j + 1;
+                                let floorSerialNoCell = document.createElement("td");
+                                floorSerialNoCell.innerText = j + 1;
 
-                            let floorNoCell = document.createElement("td");
-                            floorNoCell.innerText = floorNo;
+                                let floorNoCell = document.createElement("td");
+                                floorNoCell.innerText = floorNo;
 
-                            let floorNameCell = document.createElement("td");
-                            floorNameCell.innerText = name;
+                                let floorNameCell = document.createElement("td");
+                                floorNameCell.innerText = name;
 
-                            let floorActionsCell = document.createElement("td");
+                                let floorActionsCell = document.createElement("td");
 
-                            let showShift = document.createElement("button");
-                            showShift.innerText = "Show Shift";
-                            showShift.style.color = "green";
+                                let showShift = document.createElement("button");
+                                showShift.innerText = "Show Shift";
+                                showShift.style.color = "green";
 
-                            showShift.addEventListener("click", function() {
-                                const shiftData = encodeURIComponent(JSON.stringify(shiftList));
-                                window.location.href = `showShiftList.html?shiftData=${shiftData}&floorName=${name}`;
+                                showShift.addEventListener("click", function() {
+                                    const shiftData = encodeURIComponent(JSON.stringify(shiftList));
+                                    window.location.href = `showShiftList.html?shiftData=${shiftData}&floorName=${name}`;
+                                });
+
+                                floorActionsCell.append(showShift);
+                                floorDataRow.append(floorSerialNoCell, floorNoCell, floorNameCell, floorActionsCell);
+                                floorTbody.append(floorDataRow);
                             });
 
-                            floorActionsCell.append(showShift);
-                            floorDataRow.append(floorSerialNoCell, floorNoCell, floorNameCell, floorActionsCell);
-                            floorTbody.append(floorDataRow);
-                        });
+                            floorTable.append(floorTbody);
+                            floorCell.append(floorTable);
+                            floorRow.append(floorCell);
+                            row.parentNode.insertBefore(floorRow, row.nextSibling);
+                        }
+                    });
 
-                        floorTable.append(floorTbody);
-                        floorCell.append(floorTable);
-                        floorRow.append(floorCell);
-                        row.parentNode.insertBefore(floorRow, row.nextSibling);
-                    }
+                    actionsCell.append(showFl);
+                    row.append(serialNoCell, nameCell, labIdCell, addressCell, actionsCell);
+                    tbody.append(row);
                 });
-
-                actionsCell.append(showFl);
-                row.append(serialNoCell, nameCell, labIdCell, addressCell, actionsCell);
-                tbody.append(row);
             });
-        });
-    } else if (response.status == 401) {
-        alert("Session expired.");
-        window.location.href = "studentLogin.html";
-    } else {
-        response.json().then(data => alert(data.message));
-        window.location.reload();
-    }
+        } else if (response.status == 401) {
+            alert("Session expired.");
+            window.location.href = "studentLogin.html";
+        } else {
+            response.json().then(data => alert(data.message));
+            window.location.reload();
+        }
 });
 
 }
